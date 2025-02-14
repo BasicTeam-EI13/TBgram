@@ -1,4 +1,4 @@
-package com.tbgram.newsfeed.controller;
+package com.tbgram.domain.newsfeed.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

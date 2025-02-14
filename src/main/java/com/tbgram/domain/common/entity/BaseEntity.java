@@ -1,4 +1,4 @@
-package com.tbgram.common.entity;
+package com.tbgram.domain.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

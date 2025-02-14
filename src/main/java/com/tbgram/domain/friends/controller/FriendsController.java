@@ -1,7 +1,7 @@
-package com.tbgram.profile.controller;
+package com.tbgram.domain.friends.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ProfileController {
+public class FriendsController {
 }

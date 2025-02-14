@@ -1,4 +1,4 @@
-package com.tbgram.common.advice;
+package com.tbgram.config;
 
 //@ControllerAdvice
 //public class GlobalExceptionHandler {

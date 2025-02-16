@@ -24,12 +24,7 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
         String encodedPassword = passwordEncoder.encode(password);
-        Member member = Member.builder()
-                .email(email)
-                .password(encodedPassword)
-                .nickName(nickName)
-                .introduction(introduction)
-                .build();
+        Member member = new Member(email, encodedPassword, nickName, introduction);
         memberRepository.save(member);
         return MemberResponseDto.fromEntity(member);
     }

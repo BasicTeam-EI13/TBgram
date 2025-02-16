@@ -21,7 +21,12 @@ public class MemberController {
     // 회원가입
     @PostMapping
     public ResponseEntity<MemberResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
-        MemberResponseDto memberResponseDto = memberService.signUp(requestDto.getEmail(), requestDto.getPassword(), requestDto.getNickName(), requestDto.getIntroduction());
+        MemberResponseDto memberResponseDto = memberService.signUp(
+                requestDto.getEmail(),
+                requestDto.getPassword(),
+                requestDto.getNickName(),
+                requestDto.getIntroduction()
+        );
         return new ResponseEntity<>(memberResponseDto, HttpStatus.CREATED);
     }
 
@@ -30,7 +35,11 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> updateMember(
             @PathVariable Long id,
             @RequestBody @Valid UpdateMemberRequestDto requestDto) {
-        MemberResponseDto memberResponseDto = memberService.updateMember(id, requestDto.getNickName(), requestDto.getIntroduction());
+        MemberResponseDto memberResponseDto = memberService.updateMember(
+                id,
+                requestDto.getNickName(),
+                requestDto.getIntroduction()
+        );
         return ResponseEntity.ok(memberResponseDto);
     }
 
@@ -39,7 +48,11 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> updatePassword(
             @PathVariable Long id,
             @RequestBody UpdatePasswordRequestDto requestDto){
-        MemberResponseDto memberResponseDto = memberService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+        MemberResponseDto memberResponseDto = memberService.updatePassword(
+                id,
+                requestDto.getOldPassword(),
+                requestDto.getNewPassword()
+        );
         return ResponseEntity.ok(memberResponseDto);
     }
 

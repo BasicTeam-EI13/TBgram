@@ -2,7 +2,6 @@ package com.tbgram.domain.member.service;
 
 import com.tbgram.config.PasswordEncoder;
 import com.tbgram.domain.member.dto.MemberResponseDto;
-import com.tbgram.domain.member.dto.SignUpResponseDto;
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -39,6 +39,8 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        // null일 시에 기본값 설정 하고 싶었던 건데 이 member 생성자 자체가 적용이 안되네요
+        // 일단 null 허용상태라 기능 작동에 문제는 없습니다. 수정해야 합니당.
         this.introduction = (introduction != null) ? introduction : "한줄소개 입력 부분입니다.";
     }
 

@@ -28,4 +28,8 @@ public class FriendsController {
         Long senderId = ((SessionUser)session.getAttribute("loginUser")).getId();
         return ResponseEntity.ok(friendsService.friendsRequest(senderId, requestDto.getReceiverId()));
     }
+
+//    @PostMapping
+//    private ResponseEntity<FriendsResponseDto> friendResponse (@RequestBody)
+
 }

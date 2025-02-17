@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
@@ -45,5 +46,16 @@ public class FriendsService {
         Friends friendsRequest = new Friends(sender, receiver, RequestStatus.PENDING);
         Friends addFriends = friendRepository.save(friendsRequest);
         return FriendsResponseDto.fromEntity(addFriends);
+    }
+    @Transactional
+    public FriendsResponseDto friensResponse(Long friendsId,Long receiverId, RequestStatus status) {
+        Friends friendsRequest = friendRepository.findByIdOrElseThrow(friendsId);
+        if(friendsRequest.getReceiver().getId() != receiverId){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"응답자ID가 일치하지 않습니다.");
+        }
+
+        friendsRequest.updateStatus(status);
+        friendRepository.flush();
+        return FriendsResponseDto.fromEntity(friendsRequest);
     }
 }

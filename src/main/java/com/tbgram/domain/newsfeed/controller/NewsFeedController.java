@@ -59,5 +59,6 @@ public class NewsFeedController {
             @PathVariable Long memberId) {
         newsFeedService.deleteNewsFeed(newsfeedId, memberId);
         return ResponseEntity.noContent().build();
+
     }
 }

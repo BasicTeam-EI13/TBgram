@@ -1,7 +1,7 @@
 package com.tbgram.domain.auth.repository;
 
 
-import com.tbgram.domain.auth.entity.Member;
+import com.tbgram.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class SigninFilter implements Filter {
 
-//    private static final String[] WHITE_LIST ={"/auth/login","/member"};
+//    private static final String[] WHITE_LIST ={"/auth/signin","/members"};
     private static final String[] WHITE_LIST ={"/*"};
 
     @Override

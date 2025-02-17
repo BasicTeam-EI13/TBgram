@@ -13,18 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/newsfeed")
+@RequestMapping("/newsfeeds")
 @RequiredArgsConstructor
 public class NewsFeedController {
     private final NewsFeedService newsFeedService;
 
     //뉴스피드 작성
-    @PostMapping
+    @PostMapping("/{memberId}")
     public ResponseEntity<NewsFeedResponseDto> createNewsFeed(
-            @RequestParam Long memberId,
-            @RequestBody NewsFeedRequestDto requestDto) {
+            @PathVariable Long memberId,
+            @RequestBody NewsFeedRequestDto requestDto)
+    {
         return ResponseEntity.ok(newsFeedService.createNewsFeed(memberId, requestDto));
     }
+
 
     //뉴스피드 전체 조회 (최신순, 페이징)
     @GetMapping
@@ -34,26 +36,28 @@ public class NewsFeedController {
 
 
     //뉴스피드 상세 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<NewsFeedResponseDto> getNewsFeed(@PathVariable Long id) {
-        return ResponseEntity.ok(newsFeedService.getNewsFeed(id));
+    @GetMapping("/{newsfeedId}")
+    public ResponseEntity<NewsFeedResponseDto> getNewsFeed(@PathVariable Long newsfeedId) {
+        return ResponseEntity.ok(newsFeedService.getNewsFeed(newsfeedId));
     }
+
 
     //뉴스피드 수정
-    @PutMapping("/{id}")
+    @PutMapping("/{newsfeedId}/{memberId}")
     public ResponseEntity<NewsFeedResponseDto> updateNewsFeed(
-            @PathVariable Long id,
-            @RequestParam Long memberId,
+            @PathVariable Long newsfeedId,
+            @PathVariable Long memberId,
             @RequestBody NewsFeedRequestDto requestDto) {
-        return ResponseEntity.ok(newsFeedService.updateNewsFeed(id, memberId, requestDto));
+        return ResponseEntity.ok(newsFeedService.updateNewsFeed(newsfeedId, memberId, requestDto));
     }
 
+
     //뉴스피드 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{newsfeedId}/{memberId}")
     public ResponseEntity<Void> deleteNewsFeed(
-            @PathVariable Long id,
-            @RequestParam Long memberId) {
-        newsFeedService.deleteNewsFeed(id, memberId);
+            @PathVariable Long newsfeedId,
+            @PathVariable Long memberId) {
+        newsFeedService.deleteNewsFeed(newsfeedId, memberId);
         return ResponseEntity.noContent().build();
     }
 }

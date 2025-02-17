@@ -49,6 +49,7 @@ public class MemberService {
         return MemberResponseDto.fromEntity(member);
     }
 
+    @Transactional
     public void delete(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -56,4 +57,16 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
+    public MemberResponseDto findById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        return new MemberResponseDto(
+                member.getId(),
+                member.getEmail(),
+                member.getNickName(),
+                member.getIntroduction(),
+                member.getCreatedAt(),
+                member.getUpdatedAt());
+    }
 }

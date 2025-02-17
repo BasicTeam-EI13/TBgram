@@ -1,7 +1,7 @@
 package com.tbgram.domain.member.service;
 
 import com.tbgram.config.PasswordEncoder;
-import com.tbgram.domain.member.dto.MemberResponseDto;
+import com.tbgram.domain.member.dto.response.MemberResponseDto;
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,10 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         if(!passwordEncoder.matches(oldPassword, member.getPassword())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 불일치");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+        if(oldPassword.equals(newPassword)){
+            throw new IllegalArgumentException("동일한 비밀번호로 변경할 수 없습니다.");
         }
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         member.updatePassword(encodedNewPassword);
@@ -50,11 +53,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, String password) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        if(!passwordEncoder.matches(password, member.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
         member.delete();
-        memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)

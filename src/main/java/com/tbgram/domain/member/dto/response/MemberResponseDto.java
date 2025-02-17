@@ -1,4 +1,4 @@
-package com.tbgram.domain.member.dto;
+package com.tbgram.domain.member.dto.response;
 
 import com.tbgram.domain.member.entity.Member;
 import lombok.AllArgsConstructor;

@@ -1,13 +1,12 @@
-package com.tbgram.domain.newsfeeds.controller;
+package com.tbgram.domain.newsfeed.controller;
 
-import com.tbgram.domain.auth.dto.response.SigninResponseDto;
 import com.tbgram.domain.auth.dto.session.SessionUser;
 import com.tbgram.domain.common.dto.response.PageModelDto;
-import com.tbgram.domain.newsfeeds.dto.request.NewsFeedCreateRequestDto;
-import com.tbgram.domain.newsfeeds.dto.request.NewsFeedUpdateRequestDto;
-import com.tbgram.domain.newsfeeds.dto.response.NewsFeedDetailResponseDto;
-import com.tbgram.domain.newsfeeds.dto.response.NewsFeedResponseDto;
-import com.tbgram.domain.newsfeeds.service.NewsFeedService;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedCreateRequestDto;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedUpdateRequestDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedDetailResponseDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
+import com.tbgram.domain.newsfeed.service.NewsFeedService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -111,8 +110,6 @@ public class NewsFeedController {
         PageModelDto<NewsFeedResponseDto> responseDto = newsFeedService.getFriendNewsFeeds(memberId, page, size);
         return ResponseEntity.ok(responseDto);
     }
-
-
 
     @GetMapping("/friends/{friendId}")
     public ResponseEntity<PageModelDto<NewsFeedResponseDto>> getSpecificFriendNewsFeeds(

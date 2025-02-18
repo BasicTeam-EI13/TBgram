@@ -1,6 +1,6 @@
-package com.tbgram.domain.newsfeeds.repository;
+package com.tbgram.domain.newsfeed.repository;
 
-import com.tbgram.domain.newsfeeds.entity.NewsFeed;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

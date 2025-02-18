@@ -1,6 +1,6 @@
-package com.tbgram.domain.newsfeeds.dto.response;
+package com.tbgram.domain.newsfeed.dto.response;
 
-import com.tbgram.domain.newsfeeds.entity.NewsFeed;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import lombok.Builder;
 import lombok.Getter;
 

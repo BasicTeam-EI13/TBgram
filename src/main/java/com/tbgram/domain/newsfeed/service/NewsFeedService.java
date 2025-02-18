@@ -1,20 +1,20 @@
-package com.tbgram.domain.newsfeeds.service;
+package com.tbgram.domain.newsfeed.service;
 
 import com.tbgram.domain.comments.dto.response.CommentResponseDto;
 
 import com.tbgram.domain.member.repository.MemberRepository;
 import com.tbgram.domain.friends.respository.FriendsRepository;
 import com.tbgram.domain.comments.repository.CommentRepository;
-import com.tbgram.domain.newsfeeds.repository.NewsFeedRepository;
+import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import org.springframework.data.domain.Page;
 
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.common.dto.response.PageModelDto;
-import com.tbgram.domain.newsfeeds.dto.request.NewsFeedCreateRequestDto;
-import com.tbgram.domain.newsfeeds.dto.request.NewsFeedUpdateRequestDto;
-import com.tbgram.domain.newsfeeds.dto.response.NewsFeedDetailResponseDto;
-import com.tbgram.domain.newsfeeds.dto.response.NewsFeedResponseDto;
-import com.tbgram.domain.newsfeeds.entity.NewsFeed;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedCreateRequestDto;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedUpdateRequestDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedDetailResponseDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
 
 import com.tbgram.domain.auth.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -115,7 +115,7 @@ public class NewsFeedService {
     public PageModelDto<NewsFeedResponseDto> getFriendNewsFeeds(Long memberId, int page, int size) {
 
         // 친구 ID 목록 조회 (ACCEPTED 상태만 포함)
-        List<Long> friendIds = friendsRepository.findAcceptedFriendIdsByMemberId(memberId);
+        List<Long> friendIds = friendsRepository.findAcceptedFriendsIdByMemberId(memberId);
         Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdInOrderByCreatedAtDesc(friendIds, PageRequest.of(page - 1, size));
 
         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
@@ -126,7 +126,7 @@ public class NewsFeedService {
     // 특정 친구의 뉴스피드 조회
     public PageModelDto<NewsFeedResponseDto> getSpecificFriendNewsFeeds(Long memberId, Long friendId, int page, int size) {
 
-        List<Long> friendIds = friendsRepository.findAcceptedFriendIdsByMemberId(memberId);
+        List<Long> friendIds = friendsRepository.findAcceptedFriendsIdByMemberId(memberId);
 
         if (!friendIds.contains(friendId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이 사용자는 친구가 아닙니다.");

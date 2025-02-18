@@ -1,9 +1,11 @@
-package com.tbgram.domain.newsfeeds.entity;
+package com.tbgram.domain.newsfeed.entity;
 
 import com.tbgram.domain.common.entity.BaseEntity;
 import com.tbgram.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,9 +29,14 @@ public class NewsFeed extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    // 뉴스피드 수정
     public void updateNewsFeed(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    private LocalDateTime deletedAt; // ✅ 탈퇴된 회원의 뉴스피드를 숨기기 위해 추가
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now(); // ✅ 뉴스피드 삭제 처리
     }
 }

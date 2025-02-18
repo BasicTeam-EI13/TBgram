@@ -1,7 +1,7 @@
 package com.tbgram.config;
 
 import com.tbgram.domain.auth.exception.AuthException;
-import com.tbgram.domain.auth.exception.CustomException;
+import com.tbgram.domain.auth.exception.ApiException;
 import com.tbgram.domain.auth.exception.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +36,8 @@ public class GlobalExceptionHandler {
     }
 
     //CustomException 처리
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(ApiException ex) {
         ErrorResponse response = new ErrorResponse(ex.getErrorCode(), ex.getMessage());
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     //모든 예외 처리 (예상치 못한 오류)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        ex.printStackTrace(); // 🚀 서버에서 오류 로그 출력
+        ex.printStackTrace(); // 디버깅용으로 설정
         ErrorResponse response = new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage()); // 원본 메시지 포함
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }

@@ -7,7 +7,6 @@ import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
 import com.tbgram.domain.newsfeed.service.NewsFeedService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.tbgram.domain.member.dto;
+package com.tbgram.domain.member.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

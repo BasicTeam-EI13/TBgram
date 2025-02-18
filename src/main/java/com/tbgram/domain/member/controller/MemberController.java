@@ -1,9 +1,11 @@
 package com.tbgram.domain.member.controller;
 
-import com.tbgram.domain.member.dto.MemberResponseDto;
-import com.tbgram.domain.member.dto.SignUpRequestDto;
-import com.tbgram.domain.member.dto.UpdateMemberRequestDto;
-import com.tbgram.domain.member.dto.UpdatePasswordRequestDto;
+
+import com.tbgram.domain.member.dto.request.DeleteMemberRequestDto;
+import com.tbgram.domain.member.dto.response.MemberResponseDto;
+import com.tbgram.domain.member.dto.request.SignUpRequestDto;
+import com.tbgram.domain.member.dto.request.UpdateMemberRequestDto;
+import com.tbgram.domain.member.dto.request.UpdatePasswordRequestDto;
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -45,7 +47,7 @@ public class MemberController {
     }
 
     // 비밀번호수정
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}/password")
     public ResponseEntity<MemberResponseDto> updatePassword(
             @PathVariable Long id,
             @RequestBody UpdatePasswordRequestDto requestDto){
@@ -59,8 +61,10 @@ public class MemberController {
 
     // 회원탈퇴
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        memberService.delete(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @RequestBody DeleteMemberRequestDto requestDto) {
+        memberService.delete(id, requestDto.getPassword());
         return ResponseEntity.noContent().build();
     }
 

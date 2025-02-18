@@ -27,20 +27,17 @@ public class NewsFeedController {
         return ResponseEntity.ok(newsFeedService.createNewsFeed(memberId, requestDto));
     }
 
-
     //뉴스피드 전체 조회 (최신순, 페이징)
     @GetMapping
     public ResponseEntity<NewsPageResponseDto<NewsFeedResponseDto>> getAllNewsFeeds(Pageable pageable) {
         return ResponseEntity.ok(newsFeedService.getAllNewsFeeds(pageable));
     }
 
-
     //뉴스피드 상세 조회
     @GetMapping("/{newsfeedId}")
     public ResponseEntity<NewsFeedResponseDto> getNewsFeed(@PathVariable Long newsfeedId) {
         return ResponseEntity.ok(newsFeedService.getNewsFeed(newsfeedId));
     }
-
 
     //뉴스피드 수정
     @PutMapping("/{newsfeedId}/{memberId}")
@@ -51,7 +48,6 @@ public class NewsFeedController {
         return ResponseEntity.ok(newsFeedService.updateNewsFeed(newsfeedId, memberId, requestDto));
     }
 
-
     //뉴스피드 삭제
     @DeleteMapping("/{newsfeedId}/{memberId}")
     public ResponseEntity<Void> deleteNewsFeed(
@@ -60,4 +56,5 @@ public class NewsFeedController {
         newsFeedService.deleteNewsFeed(newsfeedId, memberId);
         return ResponseEntity.noContent().build();
     }
+
 }

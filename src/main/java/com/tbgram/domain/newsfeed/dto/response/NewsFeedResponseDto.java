@@ -20,4 +20,5 @@ public class NewsFeedResponseDto {
         this.contents = newsFeed.getContents();
         this.createdAt = newsFeed.getCreatedAt();
     }
+
 }

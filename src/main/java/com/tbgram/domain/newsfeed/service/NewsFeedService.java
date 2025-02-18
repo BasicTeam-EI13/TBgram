@@ -59,7 +59,6 @@ public class NewsFeedService {
         NewsFeed newsFeed = newsFeedRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 게시글입니다."));
 
-        // ✅ 비활성화된 게시글이면 조회 불가
         if (newsFeed.getDeletedAt() != null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_DEACTIVATED", "비활성화된 게시글입니다.");
         }

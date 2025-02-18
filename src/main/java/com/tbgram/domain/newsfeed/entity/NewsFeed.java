@@ -18,7 +18,7 @@ public class NewsFeed extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // ✅ Member와 연관관계 설정
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
@@ -28,17 +28,16 @@ public class NewsFeed extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    private LocalDateTime deletedAt;  // ✅ 비활성화 여부 체크
+    private LocalDateTime deletedAt;
 
-    /** 📌 뉴스피드 수정 기능 */
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
     }
 
-    /** 📌 뉴스피드 비활성화 (Soft Delete) */
     public void deactivate() {
-        this.deletedAt = LocalDateTime.now();  // ✅ 비활성화 상태로 변경
+        this.deletedAt = LocalDateTime.now();
     }
+
 
 }

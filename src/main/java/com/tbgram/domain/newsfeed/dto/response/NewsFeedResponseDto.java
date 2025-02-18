@@ -1,24 +1,30 @@
 package com.tbgram.domain.newsfeed.dto.response;
 
 import com.tbgram.domain.newsfeed.entity.NewsFeed;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class NewsFeedResponseDto {
+
     private Long id;
-    private String authorNickname; // ✅ 작성자 닉네임 추가
     private String title;
     private String contents;
+    private String writer;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public NewsFeedResponseDto(NewsFeed newsFeed) {
-        this.id = newsFeed.getId();
-        this.authorNickname = newsFeed.getMember().getNickName(); // ✅ 작성자 닉네임 반영
-        this.title = newsFeed.getTitle();
-        this.contents = newsFeed.getContents();
-        this.createdAt = newsFeed.getCreatedAt();
+    public static NewsFeedResponseDto fromEntity(NewsFeed newsFeed) {
+        return NewsFeedResponseDto.builder()
+                .id(newsFeed.getId())
+                .title(newsFeed.getTitle())
+                .contents(newsFeed.getContents())
+                .writer(newsFeed.getMember().getNickName()) // 작성자 닉네임 반환
+                .createdAt(newsFeed.getCreatedAt())
+                .updatedAt(newsFeed.getUpdatedAt())
+                .build();
     }
-
 }

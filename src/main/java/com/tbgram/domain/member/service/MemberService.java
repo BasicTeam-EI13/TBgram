@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -77,6 +78,12 @@ public class MemberService {
                 member.getUpdatedAt());
     }
 
+    @Transactional
+    public Member updateProfile(Long memberId,String nickName, String introduction ) {
+        Member member = memberRepository.findById(memberId).get();
+        member.updateProfile(nickName, introduction);
+        return memberRepository.save(member);
+
     @Transactional(readOnly = true)
     public FindEmailResponseDto findByEmailByNickName(String nickName) {
         Member member = memberRepository.findEmailByNickName(nickName);
@@ -84,5 +91,6 @@ public class MemberService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
         }
         return new FindEmailResponseDto(member.getEmail());
+
     }
 }

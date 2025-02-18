@@ -1,5 +1,11 @@
 package com.tbgram.domain.member.controller;
 
+import com.tbgram.domain.member.dto.request.DeleteMemberRequestDto;
+import com.tbgram.domain.member.dto.response.MemberResponseDto;
+import com.tbgram.domain.member.dto.request.SignUpRequestDto;
+import com.tbgram.domain.member.dto.request.UpdateMemberRequestDto;
+import com.tbgram.domain.member.dto.request.UpdatePasswordRequestDto;
+import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.dto.request.*;
 import com.tbgram.domain.member.dto.response.FindEmailResponseDto;
 import com.tbgram.domain.member.dto.response.MemberResponseDto;
@@ -62,6 +68,17 @@ public class MemberController {
             @RequestBody DeleteMemberRequestDto requestDto) {
         memberService.delete(id, requestDto.getPassword());
         return ResponseEntity.noContent().build();
+    }
+
+    // 프로필 업데이트
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<MemberResponseDto> updateProfile(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateMemberRequestDto requestDto) {
+        Member updatedMember = memberService.updateProfile(
+                id, requestDto.getNickName(), requestDto.getIntroduction()
+        );
+        return ResponseEntity.ok(MemberResponseDto.fromEntity(updatedMember));
     }
 
     // 단건조회

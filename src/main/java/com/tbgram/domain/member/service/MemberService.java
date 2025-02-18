@@ -4,7 +4,6 @@ import com.tbgram.config.PasswordEncoder;
 import com.tbgram.domain.member.dto.MemberResponseDto;
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.repository.MemberRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,11 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
-
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -53,6 +49,7 @@ public class MemberService {
         return MemberResponseDto.fromEntity(member);
     }
 
+    @Transactional
     public void delete(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -60,11 +57,23 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
+    public MemberResponseDto findById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        return new MemberResponseDto(
+                member.getId(),
+                member.getEmail(),
+                member.getNickName(),
+                member.getIntroduction(),
+                member.getCreatedAt(),
+                member.getUpdatedAt());
+    }
+
+    @Transactional
     public Member updateProfile(Long memberId,String nickName, String introduction ) {
         Member member = memberRepository.findById(memberId).get();
         member.updateProfile(nickName, introduction);
         return memberRepository.save(member);
     }
-
-
 }

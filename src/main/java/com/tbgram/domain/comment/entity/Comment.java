@@ -1,7 +1,8 @@
 package com.tbgram.domain.comment.entity;
 
+import com.tbgram.domain.member.entity.Member;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 
 @Entity
 public class Comment {
@@ -14,7 +15,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // FK
-    private User user;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "newsFeed_id")   //

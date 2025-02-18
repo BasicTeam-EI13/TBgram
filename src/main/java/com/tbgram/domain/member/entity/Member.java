@@ -27,7 +27,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true) // 프로필 조회시 파라미터로 nickname 사용, 따라서 unique = true로 변경
+
+    @Column(nullable = false)
     private String nickName;
 
     @Column
@@ -60,5 +61,4 @@ public class Member extends BaseEntity {
     public void delete(){
         this.deletedAt = LocalDateTime.now();
     }
-
 }

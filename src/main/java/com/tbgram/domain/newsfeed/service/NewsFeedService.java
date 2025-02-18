@@ -50,7 +50,7 @@ public class NewsFeedService {
                 .map(NewsFeedResponseDto::new)
                 .toList();
 
-        return new NewsPageResponseDto<>(content, page.getNumber(), page.getTotalPages(), page.getTotalElements(), page.isFirst(), page.isLast());
+        return new NewsPageResponseDto<>(content, page.getNumber(), page.getTotalPages(), page.getTotalElements());
     }
 
     //뉴스피드 상세 조회

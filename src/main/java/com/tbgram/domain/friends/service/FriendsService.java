@@ -1,6 +1,7 @@
 package com.tbgram.domain.friends.service;
 
 import com.tbgram.domain.friends.dto.response.FriendsResponseDto;
+import com.tbgram.domain.friends.dto.response.PageModelDto;
 import com.tbgram.domain.friends.entity.Friends;
 import com.tbgram.domain.friends.enums.RequestStatus;
 import com.tbgram.domain.friends.respository.FriendsRepository;
@@ -8,12 +9,16 @@ import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -83,5 +88,20 @@ public class FriendsService {
         }
 
         friendRepository.delete(friends);
+    }
+
+    @Transactional(readOnly = true)
+    public PageModelDto<FriendsResponseDto> getFriendsList(Long userId,Pageable pageable) {
+        Page<Friends> friendsPage = friendRepository.findBySenderIdOrReceiverIdAndStatus(userId,userId,RequestStatus.ACCEPTED,pageable);
+
+        List<FriendsResponseDto> friendsResponseDtoList = friendsPage.getContent().stream()
+                .map(FriendsResponseDto::fromEntity)
+                .collect(Collectors.toList());
+        return new PageModelDto<>(
+                friendsResponseDtoList,
+                friendsPage.getNumber(),
+                friendsPage.getSize(),
+                friendsPage.getTotalElements()
+        );
     }
 }

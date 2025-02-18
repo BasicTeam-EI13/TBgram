@@ -91,8 +91,8 @@ public class FriendsService {
     }
 
     @Transactional(readOnly = true)
-    public PageModelDto<FriendsResponseDto> getFriendsList(Long userId,Pageable pageable) {
-        Page<Friends> friendsPage = friendRepository.findBySenderIdOrReceiverIdAndStatus(userId,userId,RequestStatus.ACCEPTED,pageable);
+    public PageModelDto<FriendsResponseDto> getFriendsList(Long userId,RequestStatus status,Pageable pageable) {
+        Page<Friends> friendsPage = friendRepository.findByStatusAndSenderIdOrReceiverId(status,userId,userId,pageable);
 
         List<FriendsResponseDto> friendsResponseDtoList = friendsPage.getContent().stream()
                 .map(FriendsResponseDto::fromEntity)

@@ -5,20 +5,17 @@ import com.tbgram.domain.friends.dto.request.FriendsRequestDto;
 import com.tbgram.domain.friends.dto.request.FriendsRequestStatusDto;
 import com.tbgram.domain.friends.dto.response.FriendsResponseDto;
 import com.tbgram.domain.friends.dto.response.PageModelDto;
-import com.tbgram.domain.friends.entity.Friends;
+import com.tbgram.domain.friends.enums.RequestStatus;
 import com.tbgram.domain.friends.respository.FriendsRepository;
 import com.tbgram.domain.friends.service.FriendsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/friends")
@@ -49,7 +46,7 @@ public class FriendsController {
      * @param request   로그인 정보가 담긴 session 객체
      * @return 업데이트된 친구 Entity 정보 반환
      */
-    @PatchMapping("/{friendsId}")
+    @PutMapping("/{friendsId}")
     private ResponseEntity<?> friendsResponse(@PathVariable Long friendsId,
                                               @RequestBody FriendsRequestStatusDto statusDto,
                                               HttpServletRequest request) {
@@ -78,11 +75,20 @@ public class FriendsController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * RequestParam의 status에 따라 친구목록, 친구요청 목록을 반환합니다.
+     * @param pageable 페이징 정보가 담긴 객체
+     * @param status (ACCEPTED or PENDING)
+     * @param request 로그인 정보가 담긴 session 객체
+     * @return 페이징된 친구목록, 친구요청목록을 반환합니다.
+     */
     @GetMapping
     public ResponseEntity<PageModelDto<FriendsResponseDto>> friendsList(Pageable pageable,
+                                                                        @RequestParam RequestStatus status,
                                                                         HttpServletRequest request){
         HttpSession session = request.getSession(false);
         Long userId = ((SessionUser) session.getAttribute("loginUser")).getId();
-        return ResponseEntity.ok(friendsService.getFriendsList(userId,pageable));
+        log.info("status : {}",status);
+        return ResponseEntity.ok(friendsService.getFriendsList(userId,status,pageable));
     }
 }

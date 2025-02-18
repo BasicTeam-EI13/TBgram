@@ -17,5 +17,5 @@ public interface FriendsRepository extends JpaRepository<Friends,Long> {
         return findById(friendsId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"존재하지 않는 요청입니다."));
     }
 
-    Page<Friends> findBySenderIdOrReceiverIdAndStatus(Long senderId, Long ReceiverId, RequestStatus status,Pageable pageable);
+    Page<Friends> findByStatusAndSenderIdOrReceiverId(RequestStatus status,Long senderId, Long ReceiverId,Pageable pageable);
 }

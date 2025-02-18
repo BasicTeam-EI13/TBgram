@@ -46,8 +46,7 @@ public class GlobalExceptionHandler {
     //모든 예외 처리 (예상치 못한 오류)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        ex.printStackTrace(); // 🚀 서버에서 오류 로그 출력
-        ErrorResponse response = new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage()); // 원본 메시지 포함
+        ErrorResponse response = new ErrorResponse("INTERNAL_SERVER_ERROR", "서버 오류가 발생했습니다.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 

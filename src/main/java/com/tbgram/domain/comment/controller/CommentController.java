@@ -31,7 +31,7 @@ public class CommentController {
      * @param request
      * @return
      */
-    @PostMapping("/news-feeds/{newsfeed_id}/comments")
+    @PostMapping("/news_feeds/{newsfeed_id}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable(("newsfeed_id")) Long newsfeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
@@ -50,7 +50,7 @@ public class CommentController {
      * @param request
      * @return
      */
-    @PutMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @PutMapping("/news_feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long newsfeedId,
             @PathVariable Long commentId,
@@ -69,7 +69,7 @@ public class CommentController {
      * @param request
      * @return
      */
-    @DeleteMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @DeleteMapping("/news_feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> deleteComment(
             @PathVariable Long newsfeedId,
             @PathVariable Long commentId,

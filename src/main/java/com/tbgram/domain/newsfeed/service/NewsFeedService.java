@@ -97,7 +97,7 @@ public class NewsFeedService {
         newsFeedRepository.save(newsFeed);
     }
 
-    // 멤버Id로 최신 뉴스피드 5개 조회, 나머지 페이징
+    // 멤버Id로 최신 뉴스피드 조회 및 페이징
     @Transactional(readOnly = true)
     public NewsPageResponseDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
 

@@ -7,13 +7,13 @@ import com.tbgram.domain.member.dto.request.SignUpRequestDto;
 import com.tbgram.domain.member.dto.request.UpdateMemberRequestDto;
 import com.tbgram.domain.member.dto.request.UpdatePasswordRequestDto;
 import com.tbgram.domain.member.dto.response.ProfileResponseDto;
-import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.service.MemberService;
 import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
 import com.tbgram.domain.newsfeed.dto.response.NewsPageResponseDto;
 import com.tbgram.domain.newsfeed.service.NewsFeedService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +87,12 @@ public class MemberController {
 
     // 프로필 조회
     @GetMapping("{member_id}/profile")
-    public ResponseEntity<ProfileResponseDto> getMemberProfile(@PathVariable Long member_id, Pageable pageable){
+    public ResponseEntity<ProfileResponseDto> getMemberProfile(
+            @PathVariable Long member_id,
+            @RequestParam(defaultValue = "1") int page){
+        // 첫 페이지 번호1, 5개씩 페이지네이션 설정
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
         // 멤버 정보 조회
         MemberResponseDto memberDto = memberService.findById(member_id);
 

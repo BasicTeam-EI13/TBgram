@@ -1,10 +1,10 @@
 package com.tbgram.domain.newsfeed.service;
 
-import com.tbgram.domain.comments.dto.response.CommentResponseDto;
+import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 
 import com.tbgram.domain.member.repository.MemberRepository;
 import com.tbgram.domain.friends.respository.FriendsRepository;
-import com.tbgram.domain.comments.repository.CommentRepository;
+import com.tbgram.domain.comment.repository.CommentRepository;
 import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import org.springframework.data.domain.Page;
 

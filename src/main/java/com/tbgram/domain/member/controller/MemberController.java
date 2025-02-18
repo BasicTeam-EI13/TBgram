@@ -1,10 +1,8 @@
 package com.tbgram.domain.member.controller;
 
-import com.tbgram.domain.member.dto.request.DeleteMemberRequestDto;
+import com.tbgram.domain.member.dto.request.*;
+import com.tbgram.domain.member.dto.response.FindEmailResponseDto;
 import com.tbgram.domain.member.dto.response.MemberResponseDto;
-import com.tbgram.domain.member.dto.request.SignUpRequestDto;
-import com.tbgram.domain.member.dto.request.UpdateMemberRequestDto;
-import com.tbgram.domain.member.dto.request.UpdatePasswordRequestDto;
 import com.tbgram.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +69,13 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> findById(@PathVariable Long id){
         MemberResponseDto memberResponseDto = memberService.findById(id);
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
+    }
+
+    // 이메일 찾기
+    @GetMapping("/email")
+    public ResponseEntity<FindEmailResponseDto> findEmailByNickName(@RequestBody FindEmailRequestDto requestDto){
+        FindEmailResponseDto findEmailResponseDto = memberService.findByEmailByNickName(requestDto.getNickName());
+        return new ResponseEntity<>(findEmailResponseDto, HttpStatus.OK);
     }
 
 }

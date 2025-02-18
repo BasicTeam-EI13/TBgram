@@ -84,9 +84,9 @@ public class MemberController {
      *
      * @param id 로그인된 사용자의 id값
      * @param requestDto 현재 비밀번호(검증)
-     * @return -
+     * @return 상태코드 204 No Content 나오는거 같네용.
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<Void> delete(
             @LoginUser Long id,
             @RequestBody DeleteMemberRequestDto requestDto) {

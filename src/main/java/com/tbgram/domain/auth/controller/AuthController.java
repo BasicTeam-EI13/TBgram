@@ -3,7 +3,7 @@ package com.tbgram.domain.auth.controller;
 import com.tbgram.domain.auth.consts.Consts;
 import com.tbgram.domain.auth.dto.request.SigninRequestDto;
 import com.tbgram.domain.auth.dto.session.SessionUser;
-import com.tbgram.domain.auth.dto.response.SigininResponseDto;
+import com.tbgram.domain.auth.dto.response.SigninResponseDto;
 import com.tbgram.domain.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,10 +24,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signin")
-    private ResponseEntity<SigininResponseDto> signin (@RequestBody @Valid SigninRequestDto requestDto,
-                                                       HttpServletRequest request){
+    private ResponseEntity<SigninResponseDto> signin (@RequestBody @Valid SigninRequestDto requestDto,
+                                                      HttpServletRequest request){
 
-        SigininResponseDto responseDto = authService.signin(requestDto);
+        SigninResponseDto responseDto = authService.signin(requestDto);
         HttpSession session = request.getSession(false);
         if(session != null){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"이미 로그인된 상태입니다.");

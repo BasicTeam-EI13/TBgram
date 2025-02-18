@@ -27,7 +27,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String nickName;
 
     @Column
@@ -44,6 +45,11 @@ public class Member extends BaseEntity {
     }
 
     public void updateMember(String nickName, String introduction){
+        this.nickName = nickName;
+        this.introduction = introduction;
+    }
+
+    public void updateProfile(String nickName,String introduction ) {
         this.nickName = nickName;
         this.introduction = introduction;
     }

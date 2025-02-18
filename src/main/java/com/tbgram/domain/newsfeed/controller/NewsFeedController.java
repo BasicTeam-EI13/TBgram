@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/newsfeeds")
+@RequestMapping("/news_feeds")
 @RequiredArgsConstructor
 public class NewsFeedController {
 
@@ -54,14 +54,14 @@ public class NewsFeedController {
     }
 
     // 뉴스피드 상세 조회 (댓글 포함)
-    @GetMapping("/{newsFeedId}")
+    @GetMapping("/{news_feeds_id}")
     public ResponseEntity<NewsFeedDetailResponseDto> getNewsFeedDetail(@PathVariable Long newsFeedId) {
         NewsFeedDetailResponseDto responseDto = newsFeedService.getNewsFeedDetail(newsFeedId);
         return ResponseEntity.ok(responseDto);
     }
 
     // 뉴스피드 수정
-    @PutMapping("/{newsFeedId}")
+    @PutMapping("/{news_feeds_id}")
     public ResponseEntity<NewsFeedResponseDto> updateNewsFeed(
             @PathVariable Long newsFeedId,
             HttpServletRequest request,
@@ -78,7 +78,7 @@ public class NewsFeedController {
     }
 
     // 뉴스피드 삭제
-    @DeleteMapping("/{newsFeedId}")
+    @DeleteMapping("/{news_feeds_id}")
     public ResponseEntity<Void> deleteNewsFeed(
             @PathVariable Long newsFeedId,
             HttpServletRequest request) {

@@ -1,7 +1,7 @@
 package com.tbgram.domain.newsfeed.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.tbgram.domain.comments.dto.response.CommentResponseDto;
+import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import lombok.Getter;
 

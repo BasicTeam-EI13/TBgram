@@ -1,13 +1,9 @@
 package com.tbgram.domain.friends.dto.response;
 
-import com.tbgram.domain.friends.dto.request.FriendsRequestDto;
 import com.tbgram.domain.friends.entity.Friends;
 import com.tbgram.domain.friends.enums.RequestStatus;
-import com.tbgram.domain.member.dto.response.MemberResponseDto;
-import com.tbgram.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter

@@ -7,6 +7,7 @@ import com.tbgram.domain.comment.dto.request.CreateCommentRequestDto;
 import com.tbgram.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 import com.tbgram.domain.comment.service.CommentService;
+import com.tbgram.domain.common.annotation.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,11 +35,9 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long newsfeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.createComment(sessionUser.getId(), newsfeedId, requestDto);
+        CommentResponseDto responseDto = commentService.createComment(userId, newsfeedId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -56,11 +55,9 @@ public class CommentController {
             @PathVariable Long newsfeedId,
             @PathVariable Long commentId,
             @RequestBody @Valid UpdateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.updateComment(sessionUser.getId(), commentId, requestDto);
+        CommentResponseDto responseDto = commentService.updateComment(userId, commentId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -76,11 +73,9 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto> deleteComment(
             @PathVariable Long newsfeedId,
             @PathVariable Long commentId,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        commentService.deleteComment(sessionUser.getId(), commentId);
+        commentService.deleteComment(userId, commentId);
         return ResponseEntity.noContent().build();
     }
 }

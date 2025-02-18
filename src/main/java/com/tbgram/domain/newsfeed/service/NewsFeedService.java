@@ -1,36 +1,52 @@
 package com.tbgram.domain.newsfeed.service;
 
-import com.tbgram.domain.auth.exception.CustomException;
-import com.tbgram.domain.member.entity.Member;
-import com.tbgram.domain.member.repository.MemberRepository;
-import com.tbgram.domain.newsfeed.dto.request.NewsFeedRequestDto;
-import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
-import com.tbgram.domain.newsfeed.dto.response.NewsPageResponseDto;
-import com.tbgram.domain.newsfeed.entity.NewsFeed;
-import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
+import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 
-import lombok.RequiredArgsConstructor;
+import com.tbgram.domain.member.repository.MemberRepository;
+import com.tbgram.domain.friends.respository.FriendsRepository;
+import com.tbgram.domain.comment.repository.CommentRepository;
+import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import org.springframework.data.domain.Page;
+
+import com.tbgram.domain.member.entity.Member;
+import com.tbgram.domain.common.dto.response.PageModelDto;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedCreateRequestDto;
+import com.tbgram.domain.newsfeed.dto.request.NewsFeedUpdateRequestDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedDetailResponseDto;
+import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
+
+import com.tbgram.domain.auth.exception.ApiException;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NewsFeedService {
+
     private final NewsFeedRepository newsFeedRepository;
+
     private final MemberRepository memberRepository;
 
-    //뉴스피드 작성
-    @Transactional
-    public NewsFeedResponseDto createNewsFeed(Long memberId, NewsFeedRequestDto requestDto) {
+    private final FriendsRepository friendsRepository;
+    private final CommentRepository commentRepository;
+
+
+    // 뉴스피드 작성
+    public NewsFeedResponseDto createNewsFeed(Long memberId, NewsFeedCreateRequestDto requestDto) {
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "MEMBER_NOT_FOUND", "해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 회원입니다."));
 
         NewsFeed newsFeed = NewsFeed.builder()
                 .member(member)
@@ -38,77 +54,105 @@ public class NewsFeedService {
                 .contents(requestDto.getContents())
                 .build();
 
-        newsFeed = newsFeedRepository.save(newsFeed);
-        return new NewsFeedResponseDto(newsFeed);
+        newsFeedRepository.save(newsFeed);
+
+        return NewsFeedResponseDto.fromEntity(newsFeed);
     }
 
-    //뉴스피드 전체 조회 (최신순, 페이징)
-    @Transactional(readOnly = true)
-    public NewsPageResponseDto<NewsFeedResponseDto> getAllNewsFeeds(Pageable pageable) {
-        Page<NewsFeed> page = newsFeedRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc(pageable);
+    // 전체 뉴스피드 조회 (최신순, 페이징)
+    public PageModelDto<NewsFeedResponseDto> getAllNewsFeeds(int page, int size) {
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc(PageRequest.of(page -1, size));
+        List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
+        return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
+    }
 
-        List<NewsFeedResponseDto> content = page.getContent()
+    // 뉴스피드 상세 조회 (댓글 포함)
+    public NewsFeedDetailResponseDto getNewsFeedDetail(Long newsFeedId) {
+        // 뉴스피드 조회
+        NewsFeed newsFeed = newsFeedRepository.findById(newsFeedId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 뉴스피드입니다."));
+
+        // 댓글 조회 (최신순)
+        List<CommentResponseDto> comments = commentRepository.findByNewsFeedIdOrderByCreatedAtDesc(newsFeedId)
                 .stream()
-                .map(NewsFeedResponseDto::new)
+                .map(CommentResponseDto::fromEntity)
                 .toList();
 
-        return new NewsPageResponseDto<>(content, page.getNumber(), page.getTotalPages(), page.getTotalElements());
+        return new NewsFeedDetailResponseDto(newsFeed, comments);
     }
 
-    //뉴스피드 상세 조회
-    @Transactional(readOnly = true)
-    public NewsFeedResponseDto getNewsFeed(Long id) {
-        NewsFeed newsFeed = newsFeedRepository.findById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 게시글입니다."));
+    // 뉴스피드 수정
+    public NewsFeedResponseDto updateNewsFeed(Long newsFeedId, Long memberId, NewsFeedUpdateRequestDto requestDto) {
+        // 뉴스피드 조회
+        NewsFeed newsFeed = newsFeedRepository.findById(newsFeedId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 뉴스피드입니다."));
 
-        if (newsFeed.getDeletedAt() != null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_DEACTIVATED", "비활성화된 게시글입니다.");
+        // 작성자 본인 확인
+        if (!memberId.equals(newsFeed.getMember().getId())) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "NO_PERMISSION", "본인이 작성한 뉴스피드만 수정할 수 있습니다.");
         }
 
-        return new NewsFeedResponseDto(newsFeed);
+        // 뉴스피드 업데이트
+        newsFeed.updateNewsFeed(requestDto.getTitle(), requestDto.getContents());
+
+        return NewsFeedResponseDto.fromEntity(newsFeed);
     }
 
-    //뉴스피드 수정 (본인만 가능)
-    @Transactional
-    public NewsFeedResponseDto updateNewsFeed(Long id, Long memberId, NewsFeedRequestDto requestDto) {
-        NewsFeed newsFeed = newsFeedRepository.findById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 게시글입니다."));
+    // 뉴스피드 삭제
+    public void deleteNewsFeed(Long newsFeedId, Long memberId) {
+        // 뉴스피드 조회
+        NewsFeed newsFeed = newsFeedRepository.findById(newsFeedId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 뉴스피드입니다."));
 
-        // 본인만 수정 가능하도록 체크
+        // 작성자 본인 확인
         if (!newsFeed.getMember().getId().equals(memberId)) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
+            throw new ApiException(HttpStatus.FORBIDDEN, "NO_PERMISSION", "본인이 작성한 뉴스피드만 삭제할 수 있습니다.");
         }
 
-        newsFeed.update(requestDto.getTitle(), requestDto.getContents());
-        return new NewsFeedResponseDto(newsFeed);
+        // 뉴스피드 삭제
+        newsFeedRepository.delete(newsFeed);
     }
 
-    //뉴스피드 삭제 (본인만 가능)
-    @Transactional
-    public void deleteNewsFeed(Long id, Long memberId) {
-        NewsFeed newsFeed = newsFeedRepository.findById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "NEWSFEED_NOT_FOUND", "존재하지 않는 게시글입니다."));
+    // 친구들의 뉴스피드 조회 (최신순, 페이징)
+    public PageModelDto<NewsFeedResponseDto> getFriendNewsFeeds(Long memberId, int page, int size) {
 
-        if (!newsFeed.getMember().getId().equals(memberId)) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "FORBIDDEN", "본인의 게시글만 삭제할 수 있습니다.");
+        // 친구 ID 목록 조회 (ACCEPTED 상태만 포함)
+        List<Long> friendIds = friendsRepository.findAcceptedFriendsIdByMemberId(memberId);
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdAndDeletedAtIsNull(friendIds, PageRequest.of(page - 1, size));
+
+        List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
+
+        return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
+    }
+
+    // 특정 친구의 뉴스피드 조회
+    public PageModelDto<NewsFeedResponseDto> getSpecificFriendNewsFeeds(Long memberId, Long friendId, int page, int size) {
+
+        List<Long> friendIds = friendsRepository.findAcceptedFriendsIdByMemberId(memberId);
+
+        if (!friendIds.contains(friendId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이 사용자는 친구가 아닙니다.");
         }
 
-        newsFeed.deactivate();
-        newsFeedRepository.save(newsFeed);
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(friendId, PageRequest.of(page - 1, size));
+
+        List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
+
+        return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
     }
 
     // 멤버Id로 최신 뉴스피드 조회 및 페이징
     @Transactional(readOnly = true)
-    public NewsPageResponseDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
+    public PageModelDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
 
         // 해당 멤버의 모든 뉴스피드를 최신순으로 페이지네이션 적용하여 조회
         Page<NewsFeed> page = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(memberId, pageable);
 
         // 뉴스피드 목록을 DTO로 변환
         List<NewsFeedResponseDto> newsFeedResponseDtos = page.getContent().stream()
-                .map(NewsFeedResponseDto::new)
+                .map(NewsFeedResponseDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new NewsPageResponseDto<>(newsFeedResponseDtos, page.getNumber(), page.getTotalPages(), page.getTotalElements());
+        return new PageModelDto<>(newsFeedResponseDtos, page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
 }

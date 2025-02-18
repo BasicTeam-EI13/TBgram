@@ -118,7 +118,7 @@ public class NewsFeedService {
 
         // 친구 ID 목록 조회 (ACCEPTED 상태만 포함)
         List<Long> friendIds = friendsRepository.findAcceptedFriendsIdByMemberId(memberId);
-        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdAndDeletedAtIsNull(friendIds, PageRequest.of(page - 1, size));
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdInOrderByCreatedAtDesc(friendIds, PageRequest.of(page - 1, size));
 
         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
 

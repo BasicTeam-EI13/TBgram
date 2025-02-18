@@ -16,7 +16,7 @@ public interface NewsFeedRepository extends JpaRepository<NewsFeed, Long> {
     Page<NewsFeed> findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long memberId, Pageable pageable);
 
     // 친구들의 뉴스피드 목록 조회 (최신순, 페이징 포함)
-    Page<NewsFeed> findByMemberIdAndDeletedAtIsNull(List<Long> friendIds, Pageable pageable);
+    Page<NewsFeed> findByMemberIdInOrderByCreatedAtDesc(List<Long> friendIds, Pageable pageable);
 
 }
 

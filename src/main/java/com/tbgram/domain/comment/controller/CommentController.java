@@ -32,13 +32,13 @@ public class CommentController {
      */
     @PostMapping("/news-feeds/{newsfeed_id}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long newsfeed_id,
+            @PathVariable Long newsfeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.createComment(sessionUser.getId(), newsfeed_id, requestDto);
+        CommentResponseDto responseDto = commentService.createComment(sessionUser.getId(), newsfeedId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -53,14 +53,14 @@ public class CommentController {
      */
     @PutMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable Long newsfeedId,
+            @PathVariable Long commentId,
             @RequestBody @Valid UpdateCommentRequestDto requestDto,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.updateComment(sessionUser.getId(), comment_id, requestDto);
+        CommentResponseDto responseDto = commentService.updateComment(sessionUser.getId(), commentId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -74,13 +74,13 @@ public class CommentController {
      */
     @DeleteMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> deleteComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable Long newsfeedId,
+            @PathVariable Long commentId,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        commentService.deleteComment(sessionUser.getId(), comment_id);
+        commentService.deleteComment(sessionUser.getId(), commentId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentResponseDto {
 
-    private Long id;
-    private String contents;
-    private Long memberId;
-    private String memberNickName;
-    private Long newsFeedId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Long id;
+    private final String contents;
+    private final Long memberId;
+    private final String memberNickName;
+    private final Long newsFeedId;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static CommentResponseDto fromEntity(Comment comment) {
         return CommentResponseDto.builder()

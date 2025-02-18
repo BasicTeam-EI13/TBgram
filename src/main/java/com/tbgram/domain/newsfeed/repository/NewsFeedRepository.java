@@ -11,6 +11,7 @@ import java.util.List;
 public interface NewsFeedRepository extends JpaRepository<NewsFeed, Long> {
 
     Page<NewsFeed> findAllByDeletedAtIsNullOrderByCreatedAtDesc(Pageable pageable);
-    List<NewsFeed> findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long memberId);
+    Page<NewsFeed> findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long memberId, Pageable pageable);
     List<NewsFeed> findByMemberIdAndDeletedAtIsNull(Long memberId);
+
 }

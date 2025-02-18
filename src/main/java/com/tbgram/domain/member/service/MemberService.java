@@ -74,11 +74,4 @@ public class MemberService {
                 member.getCreatedAt(),
                 member.getUpdatedAt());
     }
-
-    @Transactional
-    public Member updateProfile(Long memberId,String nickName, String introduction ) {
-        Member member = memberRepository.findById(memberId).get();
-        member.updateProfile(nickName, introduction);
-        return memberRepository.save(member);
-    }
 }

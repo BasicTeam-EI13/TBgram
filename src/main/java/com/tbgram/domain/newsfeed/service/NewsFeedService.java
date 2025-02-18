@@ -11,12 +11,14 @@ import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +95,20 @@ public class NewsFeedService {
 
         newsFeed.deactivate();
         newsFeedRepository.save(newsFeed);
+    }
+
+    // 멤버Id로 최신 뉴스피드 5개 조회, 나머지 페이징
+    @Transactional(readOnly = true)
+    public NewsPageResponseDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
+
+        // 해당 멤버의 모든 뉴스피드를 최신순으로 페이지네이션 적용하여 조회
+        Page<NewsFeed> page = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(memberId, pageable);
+
+        // 뉴스피드 목록을 DTO로 변환
+        List<NewsFeedResponseDto> newsFeedResponseDtos = page.getContent().stream()
+                .map(NewsFeedResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new NewsPageResponseDto<>(newsFeedResponseDtos, page.getNumber(), page.getTotalPages(), page.getTotalElements());
     }
 }

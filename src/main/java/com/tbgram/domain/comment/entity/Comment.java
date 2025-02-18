@@ -23,17 +23,21 @@ public class Comment extends BaseEntity {
 
     private String contents;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false) // FK
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "memberId", nullable = false) // FK
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "newsFeed_id")   //
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "newsFeedId")   //
     private NewsFeed newsFeed;
 
     @Builder public Comment(String contents, Member member, NewsFeed newsFeed) {
         this.contents = contents;
         this.member = member;
         this.newsFeed = newsFeed;
+    }
+
+    public void update(String contents) {
+        this.contents = contents;
     }
 }

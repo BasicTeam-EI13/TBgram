@@ -23,6 +23,12 @@ public interface FriendsRepository extends JpaRepository<Friends,Long> {
     }
 
 
+
+    @Query("SELECT f FROM Friends f WHERE (f.sender.id = :userId OR f.receiver.id = :userId) AND f.status = :status")
+    Page<Friends> findFriendsByUserIdAndStatus(@Param("userId") Long userId,
+                                               @Param("status") RequestStatus status,
+                                               Pageable pageable);
+
     // 친구 ID 목록 조회 (ACCEPTED 상태만 포함)
     @Query("SELECT CASE " +
             "WHEN f.sender.id = :memberId THEN f.receiver.id " +
@@ -32,10 +38,6 @@ public interface FriendsRepository extends JpaRepository<Friends,Long> {
             "WHERE (f.sender.id = :memberId OR f.receiver.id = :memberId) " +
             "AND f.status = 'ACCEPTED'")
     List<Long> findAcceptedFriendsIdByMemberId(@Param("memberId") Long memberId);
-  
-    @Query("SELECT f FROM Friends f WHERE (f.sender.id = :userId OR f.receiver.id = :userId) AND f.status = :status")
-    Page<Friends> findFriendsByUserIdAndStatus(@Param("userId") Long userId,
-                                               @Param("status") RequestStatus status,
-                                               Pageable pageable);
 
 }
+

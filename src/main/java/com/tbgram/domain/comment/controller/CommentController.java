@@ -33,7 +33,7 @@ public class CommentController {
      */
     @PostMapping("/news-feeds/{newsfeed_id}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long newsfeedId,
+            @PathVariable(("newsfeed_id")) Long newsfeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
             @LoginUser Long userId) {
 

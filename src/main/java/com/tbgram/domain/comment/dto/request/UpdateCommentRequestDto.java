@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class UpdateCommentRequestDto {
 
     private Long commentId;
-    private String newComment;
+    private String newContents;
 }

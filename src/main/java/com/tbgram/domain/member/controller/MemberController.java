@@ -83,7 +83,7 @@ public class MemberController {
     }
 
     // 프로필 조회
-    @GetMapping("{member_id}/profile")
+    @GetMapping("/{member_id}/profile")
     public ResponseEntity<ProfileResponseDto> getMemberProfile(
             @PathVariable Long member_id,
             @RequestParam(defaultValue = "1") int page){
@@ -102,6 +102,7 @@ public class MemberController {
 
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
+
     // 이메일 찾기
     @GetMapping("/email")
     public ResponseEntity<FindEmailResponseDto> findEmailByNickName(@RequestBody FindEmailRequestDto requestDto){

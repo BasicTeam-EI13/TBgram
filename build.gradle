@@ -37,8 +37,15 @@ dependencies {
     implementation 'at.favre.lib:bcrypt:0.10.2'
     // HATEOAS
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.8.2' // JUni
+
 }
 
 tasks.named('test') {
+    useJUnitPlatform()
+}
+
+test {
     useJUnitPlatform()
 }

@@ -55,9 +55,6 @@ public class CommentService {
             throw new IllegalStateException("본인의 댓글만 수정할 수 있습니다.");
         }
 
-//         //기존 댓글 수정
-//         comment.updateContent(requestDto.getNewComment());
-
         // 기존 댓글 내용 수정
         comment.update(requestDto.getNewContents());
 
@@ -78,16 +75,4 @@ public class CommentService {
         //댓글 삭제
         commentRepository.delete(comment);
     }
-
-    //특정 뉴스피드의 댓글 조회
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> getCommentsByNewsFeed(Long newsFeedId) {
-        List<Comment> comments = commentRepository.findByNewsFeedIdOrderByCreatedAtDesc(newsFeedId);
-        return comments.stream()
-                .map(CommentResponseDto::fromEntity)
-                .collect(Collectors.toList());
-
-    }
-
-
 }

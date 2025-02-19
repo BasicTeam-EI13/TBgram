@@ -15,6 +15,8 @@ import com.tbgram.domain.member.service.MemberService;
 import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
 
 import com.tbgram.domain.newsfeed.service.NewsFeedService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -99,9 +101,15 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<Void> delete(
             @LoginUser Long id,
-            @RequestBody DeleteMemberRequestDto requestDto) {
+            @RequestBody DeleteMemberRequestDto requestDto,
+            HttpServletRequest request) {
 
         memberService.delete(id, requestDto.getPassword());
+
+        // 세션 제거
+        HttpSession session = request.getSession();
+        session.invalidate();
+
         return ResponseEntity.noContent().build();
     }
 
@@ -116,6 +124,7 @@ public class MemberController {
         MemberResponseDto memberResponseDto = memberService.findById(id);
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
+
 
     /**
      * 프로필 조회

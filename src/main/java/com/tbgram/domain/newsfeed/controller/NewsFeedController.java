@@ -114,5 +114,32 @@ public class NewsFeedController {
         return ResponseEntity.ok(responseDto);
     }
 
+    /**
+     *
+     * @param keyword 검색 내용
+     * @param type 검색 타임
+     * @param page
+     * @param size
+     * @return 검색된 뉴스피드 dto를 페이징한 정보로 반환
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PageModelDto<NewsFeedResponseDto>> searchNewsFeeds(
+            @RequestParam String keyword,
+            @RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        PageModelDto<NewsFeedResponseDto> result;
+        if ("title".equalsIgnoreCase(type)) {
+            result = newsFeedService.searchByTitle(keyword, page, size);
+        } else if ("content".equalsIgnoreCase(type)){
+            result = newsFeedService.searchByContent(keyword, page, size);
+        }else {
+            result = newsFeedService.searchByTitleOrContent(keyword, page, size);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
 }
 

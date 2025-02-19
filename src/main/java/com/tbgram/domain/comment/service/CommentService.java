@@ -11,12 +11,12 @@ import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -74,7 +74,6 @@ public class CommentService {
         if(!comment.getMember().getId().equals(memberId)) {
             throw new IllegalStateException("본인의 댓글만 삭제할 수 있습니다.");
         }
-
         //댓글 삭제
         commentRepository.delete(comment);
     }

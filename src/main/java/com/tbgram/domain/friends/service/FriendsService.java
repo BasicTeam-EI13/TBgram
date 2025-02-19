@@ -1,7 +1,7 @@
 package com.tbgram.domain.friends.service;
 
+import com.tbgram.domain.common.dto.response.PageModelDto;
 import com.tbgram.domain.friends.dto.response.FriendsResponseDto;
-import com.tbgram.domain.friends.dto.response.PageModelDto;
 import com.tbgram.domain.friends.entity.Friends;
 import com.tbgram.domain.friends.enums.RequestStatus;
 import com.tbgram.domain.friends.respository.FriendsRepository;
@@ -91,7 +91,7 @@ public class FriendsService {
     }
 
     @Transactional(readOnly = true)
-    public PageModelDto<FriendsResponseDto> getFriendsList(Long userId,RequestStatus status,Pageable pageable) {
+    public PageModelDto<FriendsResponseDto> getFriendsList(Long userId, RequestStatus status, Pageable pageable) {
         Page<Friends> friendsPage = friendRepository.findFriendsByUserIdAndStatus(userId,status,pageable);
 
         List<FriendsResponseDto> friendsResponseDtoList = friendsPage.getContent().stream()

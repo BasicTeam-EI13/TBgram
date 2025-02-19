@@ -22,12 +22,12 @@ public class Comment extends BaseEntity {
 
     private String contents;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id", nullable = false) // FK
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id") // FK
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "newsFeed_id")   //
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "news_feed_id")   //
     private NewsFeed newsFeed;
 
     //댓글 내용 수정 메서드 추가

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@JsonPropertyOrder({ "id", "title", "contents", "writer", "createdAt", "updatedAt", "comments" }) // 필드 순서 지정!
+@JsonPropertyOrder({ "id", "title", "contents", "writer", "createdAt", "updatedAt", "comments" }) // 필드 순서 고정!
 public class NewsFeedDetailResponseDto {
 
     private Long id;

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,21 +23,33 @@ public class NewsFeed extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+    private LocalDateTime deletedAt;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 20)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
+
+    @Builder
+    public NewsFeed(Member member, String title, String contents) {
+        this.member = member;
+        this.title = title;
+        this.contents = contents;
+        this.deletedAt = null; // 기본값
+    }
 
     public void updateNewsFeed(String title, String contents) {
         this.title = title;
         this.contents = contents;
     }
 
-    private LocalDateTime deletedAt; // ✅ 탈퇴된 회원의 뉴스피드를 숨기기 위해 추가
-
     public void delete() {
-        this.deletedAt = LocalDateTime.now(); // ✅ 뉴스피드 삭제 처리
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+
     }
 }

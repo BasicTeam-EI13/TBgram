@@ -7,80 +7,76 @@ import com.tbgram.domain.comment.dto.request.CreateCommentRequestDto;
 import com.tbgram.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 import com.tbgram.domain.comment.service.CommentService;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.servlet.http.HttpSession;
+import com.tbgram.domain.common.annotation.LoginUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping("/comments")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
     /**
-     * 댓글 작성
      *
-     * @param newsfeed_id
+     * @param newsFeedId
      * @param requestDto
-     * @param request
+     * @param userId
      * @return
      */
-    @PostMapping("/news-feeds/{newsfeed_id}/comments")
+    @PostMapping("/{news_feed_id}")
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long newsfeed_id,
+            @PathVariable("news_feed_id") Long newsFeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.createComment(sessionUser.getId(), newsfeed_id, requestDto);
+        CommentResponseDto responseDto = commentService.createComment(userId, newsFeedId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     /**
      * 댓글 수정
      *
-     * @param newsfeed_id
-     * @param comment_id
+     * @param commentId
      * @param requestDto
-     * @param request
+     * @param userId
      * @return
      */
-    @PutMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @PutMapping("/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable("comment_id") Long commentId,
             @RequestBody @Valid UpdateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.updateComment(sessionUser.getId(), comment_id, requestDto);
+        CommentResponseDto responseDto = commentService.updateComment(userId, commentId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     /**
      * 댓글 삭제
      *
-     * @param newsfeed_id
-     * @param comment_id
-     * @param request
+     * @param commentId
+     * @param userId
      * @return
      */
-    @DeleteMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @DeleteMapping("/{comment_id}")
     public ResponseEntity<CommentResponseDto> deleteComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
-            HttpServletRequest request) {
+            @PathVariable("comment_id") Long commentId,
+            @LoginUser Long userId) {
+         commentService.deleteComment(userId, commentId);
+         return ResponseEntity.noContent().build();
+     }
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        commentService.deleteComment(sessionUser.getId(), comment_id);
-        return ResponseEntity.noContent().build();
+    // 특정 뉴스피드의 댓글 목록 조회
+    @GetMapping("/news-feeds/{newsfeed_id}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getCommentsByNewsFeed(@PathVariable("newsfeed_id") Long newsFeedId) {
+        List<CommentResponseDto> responseDtoList = commentService.getCommentsByNewsFeed(newsFeedId);
+        return ResponseEntity.ok(responseDtoList);
     }
 }

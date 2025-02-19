@@ -50,7 +50,7 @@ public class FriendsController {
     private ResponseEntity<?> friendsResponse(@PathVariable Long friendsId,
                                               @RequestBody FriendsRequestStatusDto statusDto,
                                               @LoginUser Long receiverId) {
-        return friendsService.friensResponse(friendsId, receiverId, statusDto.getStatus())
+        return friendsService.friendsResponse(friendsId, receiverId, statusDto.getStatus())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.ok().build());
     }

@@ -16,24 +16,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Comment extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String contents;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id", nullable = false) // FK
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "newsFeed_id")   //
     private NewsFeed newsFeed;
 
-    @Builder public Comment(String contents, Member member, NewsFeed newsFeed) {
+    //댓글 내용 수정 메서드 추가
+    public void updateContent(String newContent) {
+        this.contents = newContent;
+    }
+
+    public void update(String contents) {
         this.contents = contents;
-        this.member = member;
-        this.newsFeed = newsFeed;
     }
 }
+

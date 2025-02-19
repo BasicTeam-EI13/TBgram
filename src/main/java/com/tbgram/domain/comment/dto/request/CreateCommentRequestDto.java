@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class CreateCommentRequestDto {
 
     @NotEmpty(message = "댓글 내용을 작성해주세요.")
-//    @JsonProperty("contents")
     private String contents;
 }

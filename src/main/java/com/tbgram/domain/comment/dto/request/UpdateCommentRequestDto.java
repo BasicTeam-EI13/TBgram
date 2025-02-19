@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class UpdateCommentRequestDto {
 
     @NotBlank(message = "내용을 입력해주세요")
-//    @JsonProperty("newContents")
     private String newContents;
 }

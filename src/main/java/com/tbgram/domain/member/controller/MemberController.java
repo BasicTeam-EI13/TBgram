@@ -83,8 +83,7 @@ public class MemberController {
     }
 
     // 프로필 조회
-    @GetMapping
-    @RequestMapping("/{member_id}/profile") // 프로필 조회에만 URL prefix 제거
+    @GetMapping("/{member_id}/profile")
     public ResponseEntity<ProfileResponseDto> getMemberProfile(
             @PathVariable Long member_id,
             @RequestParam(defaultValue = "1") int page){

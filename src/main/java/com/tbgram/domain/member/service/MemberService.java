@@ -24,7 +24,7 @@ public class MemberService {
         if (memberRepository.findByEmail(email).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다.");
         }
-        if (memberRepository.findByNickName(nickName).isPresent()){
+        if (memberRepository.findByNickName(nickName).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.");
         }
         String encodedPassword = passwordEncoder.encode(password);
@@ -35,7 +35,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponseDto updateMember(Long id, String nickName, String introduction) {
-        if (memberRepository.findByNickName(nickName).isPresent()){
+        if (memberRepository.findByNickName(nickName).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.");
         }
         Member member = memberRepository.findMemberByIdOrElseThrow(id);
@@ -46,10 +46,10 @@ public class MemberService {
     @Transactional
     public MemberResponseDto updatePassword(Long id, String oldPassword, String newPassword) {
         Member member = memberRepository.findMemberByIdOrElseThrow(id);
-        if(!passwordEncoder.matches(oldPassword, member.getPassword())){
+        if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
-        if(oldPassword.equals(newPassword)){
+        if (oldPassword.equals(newPassword)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "동일한 비밀번호로 변경할 수 없습니다.");
         }
         String encodedNewPassword = passwordEncoder.encode(newPassword);
@@ -60,7 +60,7 @@ public class MemberService {
     @Transactional
     public void delete(Long id, String password) {
         Member member = memberRepository.findMemberByIdOrElseThrow(id);
-        if(!passwordEncoder.matches(password, member.getPassword())){
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
         member.delete();
@@ -79,18 +79,19 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateProfile(Long memberId,String nickName, String introduction ) {
+    public Member updateProfile(Long memberId, String nickName, String introduction) {
         Member member = memberRepository.findById(memberId).get();
         member.updateProfile(nickName, introduction);
+
         return memberRepository.save(member);
-
-    @Transactional(readOnly = true)
-    public FindEmailResponseDto findByEmailByNickName(String nickName) {
-        Member member = memberRepository.findEmailByNickName(nickName);
-        if(member == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
-        }
-        return new FindEmailResponseDto(member.getEmail());
-
     }
-}
+        @Transactional(readOnly = true)
+        public FindEmailResponseDto findByEmailByNickName (String nickName){
+            Member member = memberRepository.findEmailByNickName(nickName);
+            if (member == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
+            }
+            return new FindEmailResponseDto(member.getEmail());
+
+        }
+    }

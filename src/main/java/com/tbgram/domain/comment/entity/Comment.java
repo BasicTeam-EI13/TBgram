@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Comment extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,12 +27,12 @@ public class Comment extends BaseEntity {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "newsFeed_id")   //
+    @JoinColumn(name = "news_Feed_id")   //
     private NewsFeed newsFeed;
 
-    @Builder public Comment(String contents, Member member, NewsFeed newsFeed) {
-        this.contents = contents;
-        this.member = member;
-        this.newsFeed = newsFeed;
+    //댓글 내용 수정 메서드 추가
+    public void updateContent(String newContent) {
+        this.contents = newContent;
     }
 }
+

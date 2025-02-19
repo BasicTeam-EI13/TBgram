@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -44,22 +47,18 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(Long memberId, Long commentId, @Valid UpdateCommentRequestDto requestDto) {
         // 댓글 조회
-        Comment oldComment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
         // 본인 검증
-        if (!oldComment.getMember().getId().equals(memberId)) {
+        if (!comment.getMember().getId().equals(memberId)) {
             throw new IllegalStateException("본인의 댓글만 수정할 수 있습니다.");
         }
 
-        //댓글 생성
-        Comment newComment = Comment.builder()
-                .contents(requestDto.getNewComment())
-                .member(oldComment.getMember())
-                .newsFeed(oldComment.getNewsFeed())
-                .build();
-        Comment updatedComment = commentRepository.save(newComment);
-        return CommentResponseDto.fromEntity(updatedComment);
+        //기존 댓글 수정
+        comment.updateContent(requestDto.getNewComment());
+
+        return CommentResponseDto.fromEntity(comment);
     }
 
     @Transactional
@@ -76,4 +75,15 @@ public class CommentService {
         //댓글 삭제
         commentRepository.delete(comment);
     }
+
+    //특정 뉴스피드의 댓글 조회
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> getCommentsByNewsFeed(Long newsFeedId) {
+        List<Comment> comments = commentRepository.findByNewsFeedIdOrderByCreatedAtDesc(newsFeedId);
+        return comments.stream()
+                .map(CommentResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
 }

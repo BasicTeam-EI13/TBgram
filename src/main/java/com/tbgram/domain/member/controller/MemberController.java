@@ -10,6 +10,7 @@ import com.tbgram.domain.member.dto.request.*;
 import com.tbgram.domain.member.dto.response.FindEmailResponseDto;
 import com.tbgram.domain.member.dto.response.MemberResponseDto;
 import com.tbgram.domain.member.service.MemberService;
+import com.tbgram.domain.newsfeed.service.NewsFeedService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private NewsFeedService newsFeedService;
 
     // 회원가입
     @PostMapping
@@ -66,6 +68,10 @@ public class MemberController {
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @RequestBody DeleteMemberRequestDto requestDto) {
+
+        // 뉴스피드 deletedAt 처리
+        newsFeedService.softDeleteByMemberId(id);
+
         memberService.delete(id, requestDto.getPassword());
         return ResponseEntity.noContent().build();
     }
@@ -94,5 +100,4 @@ public class MemberController {
         FindEmailResponseDto findEmailResponseDto = memberService.findByEmailByNickName(requestDto.getNickName());
         return new ResponseEntity<>(findEmailResponseDto, HttpStatus.OK);
     }
-
 }

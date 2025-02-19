@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -32,7 +34,7 @@ public class CommentController {
      */
     @PostMapping("/news-feeds/{newsfeed_id}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long newsfeed_id,
+            @PathVariable("newsfeed_id") Long newsfeed_id,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
             HttpServletRequest request) {
 
@@ -53,8 +55,8 @@ public class CommentController {
      */
     @PutMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable("newsfeed_id") Long newsfeed_id,
+            @PathVariable("comment_id") Long comment_id,
             @RequestBody @Valid UpdateCommentRequestDto requestDto,
             HttpServletRequest request) {
 
@@ -74,13 +76,23 @@ public class CommentController {
      */
     @DeleteMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> deleteComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable("newsfeed_id") Long newsfeedId,
+            @PathVariable("comment_id") Long commentId,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        commentService.deleteComment(sessionUser.getId(), comment_id);
+        commentService.deleteComment(sessionUser.getId(), commentId);
         return ResponseEntity.noContent().build();
     }
+
+    // 특정 뉴스피드의 댓글 목록 조회
+    @GetMapping("/news-feeds/{newsfeed_id}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getCommentsByNewsFeed(@PathVariable("newsfeed_id") Long newsfeedId) {
+        List<CommentResponseDto> responseDtoList = commentService.getCommentsByNewsFeed(newsfeedId);
+        return ResponseEntity.ok(responseDtoList);
+    }
+
+
+
 }

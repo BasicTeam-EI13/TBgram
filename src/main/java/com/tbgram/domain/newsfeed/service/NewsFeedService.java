@@ -143,4 +143,10 @@ public class NewsFeedService {
 
         return new PageModelDto<>(newsFeedResponseDtos, page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
+
+    // 멤버ID로 뉴스피드 조회
+    @Transactional(readOnly = true)
+    public List<NewsFeed> getNewsFeedsByMemberId(Long memberId) {
+        return newsFeedRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+    }
 }

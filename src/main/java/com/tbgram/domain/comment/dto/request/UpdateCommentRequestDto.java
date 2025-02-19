@@ -1,5 +1,6 @@
 package com.tbgram.domain.comment.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCommentRequestDto {
 
-    private Long commentId;
+    @NotBlank(message = "내용을 입력해주세요")
     private String newContents;
 }

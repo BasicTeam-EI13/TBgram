@@ -128,7 +128,13 @@ public class MemberController {
     }
 
 
-    // 프로필 조회
+    /**
+     * 프로필 조회
+     *
+     * @param id 조회할 회원의 id값
+     * @param 조회할 페이지 (기본값 = 1)
+     * @return 회원id와 페이지 번호로 조회된 프로필, 상태코드 200
+     */
     @GetMapping("/{member_id}/profile")
     public ResponseEntity<ProfileResponseDto> getMemberProfile(
             @PathVariable Long member_id,
@@ -137,11 +143,13 @@ public class MemberController {
         Pageable pageable = PageRequest.of(page - 1, 5);
 
         // 멤버 정보 조회
-        MemberResponseDto memberDto = memberService.findById(member_id);
+        MemberResponseDto memberDto = memberService.findById(member_id); //레지스트리에서 예외처리 되어있음
 
         // 해당 멤버가 작성한 뉴스피드 조회
         PageModelDto<NewsFeedResponseDto> newsFeeds = newsFeedService.getMemberNewsFeeds(member_id, pageable);
-
+        if (newsFeeds == null || newsFeeds.getResults().isEmpty()) {
+            throw new IllegalArgumentException(memberDto.getNickName() + "님이 작성한 뉴스피드가 없습니다.");
+        }
 
         // 프로필 정보에 뉴스피드 추가(병합)
         ProfileResponseDto responseDto = ProfileResponseDto.toDto(memberDto, newsFeeds.getResults());

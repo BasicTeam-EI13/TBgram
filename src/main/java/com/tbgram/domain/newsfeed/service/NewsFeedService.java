@@ -20,12 +20,14 @@ import com.tbgram.domain.auth.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +61,7 @@ public class NewsFeedService {
 
     // 전체 뉴스피드 조회 (최신순, 페이징)
     public PageModelDto<NewsFeedResponseDto> getAllNewsFeeds(int page, int size) {
-        Page<NewsFeed> newsFeedPage = newsFeedRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page -1, size));
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc(PageRequest.of(page -1, size));
         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
         return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
     }
@@ -132,10 +134,25 @@ public class NewsFeedService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이 사용자는 친구가 아닙니다.");
         }
 
-        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdOrderByCreatedAtDesc(friendId, PageRequest.of(page - 1, size));
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(friendId, PageRequest.of(page - 1, size));
 
         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
 
         return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
+    }
+
+    // 멤버Id로 최신 뉴스피드 조회 및 페이징
+    @Transactional(readOnly = true)
+    public PageModelDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
+
+        // 해당 멤버의 모든 뉴스피드를 최신순으로 페이지네이션 적용하여 조회
+        Page<NewsFeed> page = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(memberId, pageable);
+
+        // 뉴스피드 목록을 DTO로 변환
+        List<NewsFeedResponseDto> newsFeedResponseDtos = page.getContent().stream()
+                .map(NewsFeedResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return new PageModelDto<>(newsFeedResponseDtos, page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
 }

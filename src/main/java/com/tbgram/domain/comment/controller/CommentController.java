@@ -7,6 +7,7 @@ import com.tbgram.domain.comment.dto.request.CreateCommentRequestDto;
 import com.tbgram.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.tbgram.domain.comment.dto.response.CommentResponseDto;
 import com.tbgram.domain.comment.service.CommentService;
+import com.tbgram.domain.common.annotation.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,15 +31,13 @@ public class CommentController {
      * @param request
      * @return
      */
-    @PostMapping("/news-feeds/{newsfeed_id}/comments")
+    @PostMapping("/news_feeds/{newsfeed_id}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long newsfeed_id,
+            @PathVariable(("newsfeed_id")) Long newsfeedId,
             @RequestBody @Valid CreateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.createComment(sessionUser.getId(), newsfeed_id, requestDto);
+        CommentResponseDto responseDto = commentService.createComment(userId, newsfeedId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -51,16 +50,14 @@ public class CommentController {
      * @param request
      * @return
      */
-    @PutMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @PutMapping("/news_feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
+            @PathVariable Long newsfeedId,
+            @PathVariable Long commentId,
             @RequestBody @Valid UpdateCommentRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        CommentResponseDto responseDto = commentService.updateComment(sessionUser.getId(), comment_id, requestDto);
+        CommentResponseDto responseDto = commentService.updateComment(userId, commentId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -72,15 +69,13 @@ public class CommentController {
      * @param request
      * @return
      */
-    @DeleteMapping("/news-feeds/{newsfeed_id}/comments/{comment_id}")
+    @DeleteMapping("/news_feeds/{newsfeed_id}/comments/{comment_id}")
     public ResponseEntity<CommentResponseDto> deleteComment(
-            @PathVariable Long newsfeed_id,
-            @PathVariable Long comment_id,
-            HttpServletRequest request) {
+            @PathVariable Long newsfeedId,
+            @PathVariable Long commentId,
+            @LoginUser Long userId) {
 
-        HttpSession session = request.getSession(false);
-        SessionUser sessionUser = (SessionUser) session.getAttribute(Consts.LOGIN_USER);
-        commentService.deleteComment(sessionUser.getId(), comment_id);
+        commentService.deleteComment(userId, commentId);
         return ResponseEntity.noContent().build();
     }
 }

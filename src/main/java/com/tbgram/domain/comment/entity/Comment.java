@@ -23,11 +23,11 @@ public class Comment extends BaseEntity {
 
     private String contents;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id", nullable = false) // FK
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "newsFeed_id")   //
     private NewsFeed newsFeed;
 
@@ -35,5 +35,9 @@ public class Comment extends BaseEntity {
         this.contents = contents;
         this.member = member;
         this.newsFeed = newsFeed;
+    }
+
+    public void update(String contents) {
+        this.contents = contents;
     }
 }

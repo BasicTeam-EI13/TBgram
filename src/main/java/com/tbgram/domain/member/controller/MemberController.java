@@ -1,6 +1,7 @@
 package com.tbgram.domain.member.controller;
 
 
+import com.tbgram.domain.common.annotation.CheckAuth;
 import com.tbgram.domain.common.dto.response.PageModelDto;
 import com.tbgram.domain.common.annotation.LoginUser;
 import com.tbgram.domain.member.dto.request.DeleteMemberRequestDto;
@@ -60,6 +61,7 @@ public class MemberController {
      * @param id 로그인된 사용자의 id값
      * @return 수정된 회원의 정보, 상태코드 200
      */
+    @CheckAuth
     @PutMapping
     public ResponseEntity<MemberResponseDto> updateMember(
             @LoginUser Long id,
@@ -79,10 +81,11 @@ public class MemberController {
      * @param id 로그인된 사용자의 id값
      * @return 비밀번호가 수정된 회원의 정보, 상태코드 200
      */
+    @CheckAuth
     @PutMapping("/password")
     public ResponseEntity<MemberResponseDto> updatePassword(
             @LoginUser Long id,
-            @RequestBody UpdatePasswordRequestDto requestDto){
+            @RequestBody @Valid UpdatePasswordRequestDto requestDto){
         MemberResponseDto memberResponseDto = memberService.updatePassword(
                 id,
                 requestDto.getOldPassword(),
@@ -96,8 +99,9 @@ public class MemberController {
      *
      * @param id 로그인된 사용자의 id값
      * @param requestDto 현재 비밀번호(검증)
-     * @return 상태코드 204 No Content 나오는거 같네용.
+     * @return 상태코드 204 No Content
      */
+    @CheckAuth
     @DeleteMapping
     public ResponseEntity<Void> delete(
             @LoginUser Long id,
@@ -156,11 +160,12 @@ public class MemberController {
     }
 
     /**
-     * 회원 단건 조회
+     * 이메일 찾기
      *
      * @param requestDto email조회를 위한 nickName 요청
      * @return nickName으로 조회된 회원의 email 반환, 상태코드 200
      */
+    @CheckAuth
     @GetMapping("/email")
     public ResponseEntity<FindEmailResponseDto> findEmailByNickName(@RequestBody FindEmailRequestDto requestDto){
         FindEmailResponseDto findEmailResponseDto = memberService.findByEmailByNickName(requestDto.getNickName());

@@ -1,5 +1,6 @@
 package com.tbgram.domain.friends.controller;
 
+import com.tbgram.domain.common.annotation.CheckAuth;
 import com.tbgram.domain.common.annotation.LoginUser;
 import com.tbgram.domain.common.dto.response.PageModelDto;
 import com.tbgram.domain.friends.dto.request.FriendsRequestDto;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/friends")
 public class FriendsController {
     private final FriendsService friendsService;
-    private final FriendsRepository friendsRepository;
 
     /**
      * 친구요청
@@ -29,7 +29,7 @@ public class FriendsController {
      * @param senderId 로그인된 사용자의 ID값
      * @return 생성된 친구 Entity 정보 반환
      */
-
+    @CheckAuth
     @PostMapping
     private ResponseEntity<FriendsResponseDto> friendsRequest(@RequestBody FriendsRequestDto requestDto,
                                                               @LoginUser Long senderId) {
@@ -43,6 +43,7 @@ public class FriendsController {
      * @param receiverId 로그인된 사용자의 ID값
      * @return 업데이트된 친구 Entity 정보 반환
      */
+    @CheckAuth
     @PutMapping("/{friendsId}")
     private ResponseEntity<?> friendsResponse(@PathVariable Long friendsId,
                                               @RequestBody FriendsRequestStatusDto statusDto,
@@ -54,10 +55,12 @@ public class FriendsController {
 
     /**
      * 친구 삭제
+     *
      * @param friendsId 삭제할 친구 관계의 id
      * @param userId 로그인된 사용자의 ID값
      * @return HTTP 상태코드 200(OK)
      */
+    @CheckAuth
     @DeleteMapping("/{friendsId}")
     private ResponseEntity<Void> deleteFriends(@PathVariable Long friendsId,
                                                @LoginUser Long userId) {
@@ -73,6 +76,7 @@ public class FriendsController {
      * @param userId 로그인된 유저의 ID
      * @return 페이징된 친구목록, 친구요청목록을 반환합니다
      */
+    @CheckAuth
     @GetMapping
     public ResponseEntity<PageModelDto<FriendsResponseDto>> friendsList(Pageable pageable,
                                                                         @RequestParam RequestStatus status,

@@ -3,20 +3,15 @@ package com.tbgram.domain.comment.controller;
 import com.tbgram.domain.comment.dto.request.CreateCommentRequestDto;
 import com.tbgram.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.tbgram.domain.comment.dto.response.CommentResponseDto;
-import com.tbgram.domain.comment.entity.Comment;
 import com.tbgram.domain.comment.repository.CommentRepository;
 import com.tbgram.domain.comment.service.CommentService;
+import com.tbgram.domain.common.annotation.CheckAuth;
 import com.tbgram.domain.common.annotation.LoginUser;
-import com.tbgram.domain.newsfeed.entity.NewsFeed;
 import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/comments")
@@ -24,16 +19,16 @@ import java.util.stream.Collectors;
 public class CommentController {
 
     private final CommentService commentService;
-    private final NewsFeedRepository newsFeedRepository;
-    private final CommentRepository commentRepository;
 
     /**
+     * 댓글 작성
      *
      * @param newsFeedId
      * @param requestDto
      * @param userId
      * @return
      */
+    @CheckAuth
     @PostMapping("/{news_feed_id}")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable("news_feed_id") Long newsFeedId,
@@ -52,6 +47,7 @@ public class CommentController {
      * @param userId
      * @return
      */
+    @CheckAuth
     @PutMapping("/{comment_id}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable("comment_id") Long commentId,
@@ -69,6 +65,7 @@ public class CommentController {
      * @param userId
      * @return
      */
+    @CheckAuth
     @DeleteMapping("/{comment_id}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable("comment_id") Long commentId,

@@ -54,15 +54,16 @@ public class NewsFeedController {
 
     // 뉴스피드 상세 조회 (댓글 포함)
     @GetMapping("/{news_feeds_id}")
-    public ResponseEntity<NewsFeedDetailResponseDto> getNewsFeedDetail(@PathVariable Long newsFeedId) {
-        NewsFeedDetailResponseDto responseDto = newsFeedService.getNewsFeedDetail(newsFeedId);
+    public ResponseEntity<NewsFeedDetailResponseDto> getNewsFeedDetail(@PathVariable(name = "news_feeds_id") Long news_feeds_id) {
+        NewsFeedDetailResponseDto responseDto = newsFeedService.getNewsFeedDetail(news_feeds_id);
         return ResponseEntity.ok(responseDto);
     }
+
 
     // 뉴스피드 수정
     @PutMapping("/{news_feeds_id}")
     public ResponseEntity<NewsFeedResponseDto> updateNewsFeed(
-            @PathVariable Long newsFeedId,
+            @PathVariable("news_feeds_id") Long newsFeedId,
             HttpServletRequest request,
             @RequestBody @Valid NewsFeedUpdateRequestDto requestDto) {
 
@@ -79,7 +80,7 @@ public class NewsFeedController {
     // 뉴스피드 삭제
     @DeleteMapping("/{news_feeds_id}")
     public ResponseEntity<Void> deleteNewsFeed(
-            @PathVariable Long newsFeedId,
+            @PathVariable("news_feeds_id") Long newsFeedId,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
@@ -127,5 +128,6 @@ public class NewsFeedController {
 
         return ResponseEntity.ok(responseDto);
     }
+
 }
 

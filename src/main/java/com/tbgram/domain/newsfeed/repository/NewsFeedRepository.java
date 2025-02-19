@@ -10,19 +10,21 @@ import java.util.Optional;
 
 public interface NewsFeedRepository extends JpaRepository<NewsFeed, Long> {
 
-    //삭제되지 않은 전체 뉴스피드 조회 (최신순)
-    Page<NewsFeed> findAllByDeletedAtIsNullOrderByCreatedAtDesc(Pageable pageable);
+    //뉴스피드 전체 조회
+    Page<NewsFeed> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    //특정 회원이 작성한 뉴스피드 중 삭제되지 않은 데이터만 조회 (최신순)
-    Page<NewsFeed> findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long memberId, Pageable pageable);
+    //특정 회원이 작성한 뉴스피드 조회
+    Page<NewsFeed> findByMemberIdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
 
-    //특정 뉴스피드 ID로 조회 (삭제되지 않은 데이터만)
-    Optional<NewsFeed> findByIdAndDeletedAtIsNull(Long id);
+    //특정 뉴스피드 ID로 조회
+    Optional<NewsFeed> findById(Long newsFeedId);
 
-    //친구들의 뉴스피드 목록 조회 (삭제되지 않은 데이터만, 최신순)
-    Page<NewsFeed> findByMemberIdInAndDeletedAtIsNullOrderByCreatedAtDesc(List<Long> friendIds, Pageable pageable);
+    //친구들의 뉴스피드 목록 조회
+    Page<NewsFeed> findByMemberIdInOrderByCreatedAtDesc(List<Long> friendIds, Pageable pageable);
 
-    //특정 회원이 작성한 뉴스피드 전체 조회 (삭제되지 않은 데이터만)
-    List<NewsFeed> findByMemberIdAndDeletedAtIsNull(Long memberId);
+    //특정 회원이 작성한 뉴스피드 전체 조회
+    List<NewsFeed> findByMemberIdOrderByCreatedAtDesc(Long memberId);
+
+    //특정 회원이 작성한 뉴스피드 삭제
+    void deleteByMemberId(Long memberId);
 }
-

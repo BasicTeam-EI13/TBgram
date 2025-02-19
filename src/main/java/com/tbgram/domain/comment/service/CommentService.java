@@ -75,16 +75,4 @@ public class CommentService {
         //댓글 삭제
         commentRepository.delete(comment);
     }
-
-    //특정 뉴스피드의 댓글 조회
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> getCommentsByNewsFeed(Long newsFeedId) {
-        List<Comment> comments = commentRepository.findByNewsFeedIdOrderByCreatedAtDesc(newsFeedId);
-        return comments.stream()
-                .map(CommentResponseDto::fromEntity)
-                .collect(Collectors.toList());
-
-    }
-
-
 }

@@ -78,6 +78,13 @@ public class MemberService {
                 member.getUpdatedAt());
     }
 
+    @Transactional
+    public Member updateProfile(Long memberId,String nickName, String introduction ) {
+        Member member = memberRepository.findById(memberId).get();
+        member.updateProfile(nickName, introduction);
+        return memberRepository.save(member);
+    }
+
     @Transactional(readOnly = true)
     public FindEmailResponseDto findByEmailByNickName(String nickName) {
         Member member = memberRepository.findEmailByNickName(nickName);

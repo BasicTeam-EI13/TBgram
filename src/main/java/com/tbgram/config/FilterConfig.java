@@ -14,7 +14,7 @@ public class FilterConfig {
     public FilterRegistrationBean signinFilter(){
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new SigninFilter());
-        filterRegistrationBean.setOrder(2);
+        filterRegistrationBean.setOrder(1);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;
     }

@@ -104,8 +104,6 @@ public class MemberController {
             @RequestBody DeleteMemberRequestDto requestDto,
             HttpServletRequest request) {
 
-        // 뉴스피드 deletedAt 처리
-        newsFeedService.softDeleteByMemberId(id);
         memberService.delete(id, requestDto.getPassword());
 
         // 세션 제거
@@ -131,8 +129,8 @@ public class MemberController {
     /**
      * 프로필 조회
      *
-     * @param id 조회할 회원의 id값
-     * @param 조회할 페이지 (기본값 = 1)
+     * @param member_id 조회할 회원의 id값
+     * @param page 조회할 페이지 (기본값 = 1)
      * @return 회원id와 페이지 번호로 조회된 프로필, 상태코드 200
      */
     @GetMapping("/{member_id}/profile")

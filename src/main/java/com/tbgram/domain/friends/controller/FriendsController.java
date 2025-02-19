@@ -1,16 +1,13 @@
 package com.tbgram.domain.friends.controller;
 
-import com.tbgram.domain.auth.dto.session.SessionUser;
 import com.tbgram.domain.common.annotation.LoginUser;
+import com.tbgram.domain.common.dto.response.PageModelDto;
 import com.tbgram.domain.friends.dto.request.FriendsRequestDto;
 import com.tbgram.domain.friends.dto.request.FriendsRequestStatusDto;
 import com.tbgram.domain.friends.dto.response.FriendsResponseDto;
-import com.tbgram.domain.friends.dto.response.PageModelDto;
 import com.tbgram.domain.friends.enums.RequestStatus;
 import com.tbgram.domain.friends.respository.FriendsRepository;
 import com.tbgram.domain.friends.service.FriendsService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -70,17 +67,16 @@ public class FriendsController {
 
     /**
      * RequestParam의 status에 따라 친구목록, 친구요청 목록을 반환합니다.
+     *
      * @param pageable 페이징 정보가 담긴 객체
      * @param status (ACCEPTED or PENDING)
-     * @param request 로그인 정보가 담긴 session 객체
-     * @return 페이징된 친구목록, 친구요청목록을 반환합니다.
+     * @param userId 로그인된 유저의 ID
+     * @return 페이징된 친구목록, 친구요청목록을 반환합니다
      */
     @GetMapping
     public ResponseEntity<PageModelDto<FriendsResponseDto>> friendsList(Pageable pageable,
                                                                         @RequestParam RequestStatus status,
-                                                                        HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        Long userId = ((SessionUser) session.getAttribute("loginUser")).getId();
+                                                                        @LoginUser Long userId){
         return ResponseEntity.ok(friendsService.getFriendsList(userId,status,pageable));
     }
 }

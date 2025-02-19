@@ -3,6 +3,7 @@ package com.tbgram.config;
 import com.tbgram.domain.auth.exception.AuthException;
 import com.tbgram.domain.auth.exception.ApiException;
 import com.tbgram.domain.auth.exception.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -21,18 +22,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<Map<String, Object>> handlePasswordMismatchException(AuthException ex) {
+    public ResponseEntity<Map<String, Object>> handleLoginException(AuthException ex) {
+        log.info("AuthException : {}",ex.getMessage());
+        ex.printStackTrace();
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return getErrorResponse(status, ex.getMessage());
-    }
-
-    public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", status.name());
-        errorResponse.put("code", status.value());
-        errorResponse.put("message", message);
-
-        return new ResponseEntity<>(errorResponse, status);
     }
 
     //CustomException 처리
@@ -64,4 +58,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
+    public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", status.name());
+        errorResponse.put("code", status.value());
+        errorResponse.put("message", message);
+
+        return new ResponseEntity<>(errorResponse, status);
+    }
 }

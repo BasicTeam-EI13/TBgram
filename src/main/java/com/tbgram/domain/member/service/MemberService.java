@@ -85,6 +85,8 @@ public class MemberService {
 
         return memberRepository.save(member);
     }
+
+  
         @Transactional(readOnly = true)
         public FindEmailResponseDto findByEmailByNickName (String nickName){
             Member member = memberRepository.findEmailByNickName(nickName);
@@ -92,6 +94,7 @@ public class MemberService {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
             }
             return new FindEmailResponseDto(member.getEmail());
+
 
         }
 

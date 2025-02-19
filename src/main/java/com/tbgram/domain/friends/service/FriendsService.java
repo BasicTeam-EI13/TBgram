@@ -55,7 +55,7 @@ public class FriendsService {
     }
 
     @Transactional
-    public Optional<FriendsResponseDto> friensResponse(Long friendsId, Long receiverId, RequestStatus status) {
+    public Optional<FriendsResponseDto> friendsResponse(Long friendsId, Long receiverId, RequestStatus status) {
         Friends friendsRequest = friendRepository.findByIdOrElseThrow(friendsId);
         if (friendsRequest.getReceiver().getId() != receiverId) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "응답자ID가 일치하지 않습니다.");

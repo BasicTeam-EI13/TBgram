@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +55,10 @@ public class NewsFeedService {
     public PageModelDto<NewsFeedResponseDto> getAllNewsFeeds(int page, int size) {
         Page<NewsFeed> newsFeedPage = newsFeedRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc(PageRequest.of(page - 1, size));
         return createPageResponse(newsFeedPage);
+
+//         Page<NewsFeed> newsFeedPage = newsFeedRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc(PageRequest.of(page -1, size));
+//         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
+//         return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
     }
 
     // 뉴스피드 상세 조회 (댓글 포함)
@@ -119,8 +124,27 @@ public class NewsFeedService {
 
     // 페이지네이션 응답 생성 (중복 제거)
     private PageModelDto<NewsFeedResponseDto> createPageResponse(Page<NewsFeed> newsFeedPage) {
-        List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
-        return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
+
+        Page<NewsFeed> newsFeedPage = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(friendId, PageRequest.of(page - 1, size));
+
+
+//         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
+//         return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
     }
 
+
+    // 멤버Id로 최신 뉴스피드 조회 및 페이징
+    @Transactional(readOnly = true)
+    public PageModelDto<NewsFeedResponseDto> getMemberNewsFeeds(Long memberId, Pageable pageable) {
+
+        // 해당 멤버의 모든 뉴스피드를 최신순으로 페이지네이션 적용하여 조회
+        Page<NewsFeed> page = newsFeedRepository.findByMemberIdAndDeletedAtIsNullOrderByCreatedAtDesc(memberId, pageable);
+
+        // 뉴스피드 목록을 DTO로 변환
+        List<NewsFeedResponseDto> newsFeedResponseDtos = page.getContent().stream()
+                .map(NewsFeedResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return new PageModelDto<>(newsFeedResponseDtos, page.getNumber() + 1, page.getSize(), page.getTotalElements());
+    }
 }

@@ -35,7 +35,7 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 삭제된 뉴스피드 입니다."));
         //댓글 생성
         Comment comment = Comment.builder()
-                .contents(requestDto.getComment())
+                .contents(requestDto.getContents())
                 .member(member)
                 .newsFeed(newsFeed)
                 .build();
@@ -55,8 +55,11 @@ public class CommentService {
             throw new IllegalStateException("본인의 댓글만 수정할 수 있습니다.");
         }
 
-        //기존 댓글 수정
-        comment.updateContent(requestDto.getNewComment());
+//         //기존 댓글 수정
+//         comment.updateContent(requestDto.getNewComment());
+
+        // 기존 댓글 내용 수정
+        comment.update(requestDto.getNewContents());
 
         return CommentResponseDto.fromEntity(comment);
     }

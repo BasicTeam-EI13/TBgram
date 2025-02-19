@@ -1,20 +1,23 @@
 package com.tbgram.domain.comment.controller;
 
-
-import com.tbgram.domain.auth.consts.Consts;
-import com.tbgram.domain.auth.dto.session.SessionUser;
 import com.tbgram.domain.comment.dto.request.CreateCommentRequestDto;
 import com.tbgram.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.tbgram.domain.comment.dto.response.CommentResponseDto;
+import com.tbgram.domain.comment.entity.Comment;
+import com.tbgram.domain.comment.repository.CommentRepository;
 import com.tbgram.domain.comment.service.CommentService;
 import com.tbgram.domain.common.annotation.LoginUser;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
+import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/comments")
@@ -22,6 +25,8 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final NewsFeedRepository newsFeedRepository;
+    private final CommentRepository commentRepository;
 
     /**
      *
@@ -72,4 +77,5 @@ public class CommentController {
          commentService.deleteComment(userId, commentId);
          return ResponseEntity.noContent().build();
      }
+
 }

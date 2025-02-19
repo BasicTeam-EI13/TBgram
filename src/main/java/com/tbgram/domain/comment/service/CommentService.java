@@ -32,7 +32,7 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
         // 뉴스피드 조회
         NewsFeed newsFeed = newsFeedRepository.findById(newsfeedId)
-                .orElseThrow(() -> new IllegalArgumentException("이미 삭제된 뉴스피드 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 뉴스피드입니다."));
         //댓글 생성
         Comment comment = Comment.builder()
                 .contents(requestDto.getContents())
@@ -65,7 +65,7 @@ public class CommentService {
     public void deleteComment(Long memberId, Long commentId) {
         // 댓글 조회
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("이미 삭제된 댓글입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
         // 본인 검증
         if(!comment.getMember().getId().equals(memberId)) {

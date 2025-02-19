@@ -83,7 +83,8 @@ public class MemberController {
     }
 
     // 프로필 조회
-    @GetMapping(path = "/{member_id}/profile")
+    @GetMapping("/{member_id}/profile")
+    @RequestMapping("/") // 프로필 조회에만 전역설정 제외
     public ResponseEntity<ProfileResponseDto> getMemberProfile(
             @PathVariable Long member_id,
             @RequestParam(defaultValue = "1") int page){

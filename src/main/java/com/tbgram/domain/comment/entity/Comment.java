@@ -24,11 +24,11 @@ public class Comment extends BaseEntity {
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "memberId", nullable = false) // FK
+    @JoinColumn(name = "member_id", nullable = false) // FK
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "newsFeedId")   //
+    @JoinColumn(name = "newsFeed_id")   //
     private NewsFeed newsFeed;
 
     @Builder public Comment(String contents, Member member, NewsFeed newsFeed) {

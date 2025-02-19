@@ -99,7 +99,7 @@ public class FriendsService {
                 .collect(Collectors.toList());
         return new PageModelDto<>(
                 friendsResponseDtoList,
-                friendsPage.getNumber(),
+                friendsPage.getNumber()+1,
                 friendsPage.getSize(),
                 friendsPage.getTotalElements()
         );

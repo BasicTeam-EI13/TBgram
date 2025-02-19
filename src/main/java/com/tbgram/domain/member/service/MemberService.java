@@ -91,16 +91,6 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    //이전 코드 혹시몰라 남깁니다...
-//    @Transactional
-//    public void delete(Long id, String password) {
-//        Member member = memberRepository.findMemberByIdOrElseThrow(id);
-//        if (!passwordEncoder.matches(password, member.getPassword())) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-//        }
-//        member.delete();
-//    }
-
     @Transactional(readOnly = true)
     public MemberResponseDto findById(Long id) {
         Member member = memberRepository.findMemberByIdOrElseThrow(id);
@@ -113,24 +103,15 @@ public class MemberService {
                 member.getUpdatedAt());
     }
 
-    @Transactional
-    public Member updateProfile(Long memberId, String nickName, String introduction) {
-        Member member = memberRepository.findById(memberId).get();
-        member.updateProfile(nickName, introduction);
-
-        return memberRepository.save(member);
-    }
-
-  
-        @Transactional(readOnly = true)
-        public FindEmailResponseDto findByEmailByNickName (String nickName){
-            Member member = memberRepository.findEmailByNickName(nickName);
-            if (member == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
-            }
-            return new FindEmailResponseDto(member.getEmail());
-
-
+    @Transactional(readOnly = true)
+    public FindEmailResponseDto findByEmailByNickName(String nickName) {
+        Member member = memberRepository.findEmailByNickName(nickName);
+        if (member == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 닉네임이 존재하지 않습니다.");
         }
+        return new FindEmailResponseDto(member.getEmail());
+
 
     }
+
+}

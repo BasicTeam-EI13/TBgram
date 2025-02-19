@@ -5,6 +5,7 @@ import com.tbgram.domain.auth.dto.request.SigninRequestDto;
 import com.tbgram.domain.auth.dto.session.SessionUser;
 import com.tbgram.domain.auth.dto.response.SigninResponseDto;
 import com.tbgram.domain.auth.service.AuthService;
+import com.tbgram.domain.common.annotation.CheckAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -39,6 +40,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.signin(requestDto));
     }
 
+    @CheckAuth
     @PostMapping("/signout")
     private ResponseEntity<Void> signout(HttpServletRequest request){
         HttpSession session = request.getSession();

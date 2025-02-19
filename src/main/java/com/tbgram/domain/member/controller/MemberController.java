@@ -83,7 +83,7 @@ public class MemberController {
     }
 
     // 프로필 조회
-    @GetMapping("/{member_id}/profile")
+    @GetMapping(path = "/{member_id}/profile")
     public ResponseEntity<ProfileResponseDto> getMemberProfile(
             @PathVariable Long member_id,
             @RequestParam(defaultValue = "1") int page){

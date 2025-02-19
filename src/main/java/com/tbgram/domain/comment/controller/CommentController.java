@@ -66,17 +66,10 @@ public class CommentController {
      * @return
      */
     @DeleteMapping("/{comment_id}")
-    public ResponseEntity<CommentResponseDto> deleteComment(
+    public ResponseEntity<Void> deleteComment(
             @PathVariable("comment_id") Long commentId,
             @LoginUser Long userId) {
          commentService.deleteComment(userId, commentId);
          return ResponseEntity.noContent().build();
      }
-
-    // 특정 뉴스피드의 댓글 목록 조회
-    @GetMapping("/news-feeds/{newsfeed_id}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsByNewsFeed(@PathVariable("newsfeed_id") Long newsFeedId) {
-        List<CommentResponseDto> responseDtoList = commentService.getCommentsByNewsFeed(newsFeedId);
-        return ResponseEntity.ok(responseDtoList);
-    }
 }

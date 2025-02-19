@@ -4,6 +4,7 @@ import com.tbgram.domain.comment.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
 
 @Repository
@@ -11,4 +12,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findByNewsFeedIdOrderByCreatedAtDesc(Long newsFeedId);
 
+
+    //List<Comment> findByMemberId(Long memberId);
+    void deleteByMemberId(Long memberId);
+    void deleteByNewsFeedId(Long newsFeedId);
 }

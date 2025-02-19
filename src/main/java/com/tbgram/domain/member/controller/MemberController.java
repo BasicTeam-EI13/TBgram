@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -29,7 +29,7 @@ public class MemberController {
     private final NewsFeedService newsFeedService;
 
     // 회원가입
-    @PostMapping
+    @PostMapping("/members")
     public ResponseEntity<MemberResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
         MemberResponseDto memberResponseDto = memberService.signUp(
                 requestDto.getEmail(),
@@ -41,7 +41,7 @@ public class MemberController {
     }
 
     // 회원정보수정
-    @PutMapping("/{id}")
+    @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponseDto> updateMember(
             @PathVariable Long id,
             @RequestBody @Valid UpdateMemberRequestDto requestDto) {
@@ -54,7 +54,7 @@ public class MemberController {
     }
 
     // 비밀번호수정
-    @PutMapping("/{id}/password")
+    @PutMapping("/members/{id}/password")
     public ResponseEntity<MemberResponseDto> updatePassword(
             @PathVariable Long id,
             @RequestBody UpdatePasswordRequestDto requestDto){
@@ -67,7 +67,7 @@ public class MemberController {
     }
 
     // 회원탈퇴
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/members/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @RequestBody DeleteMemberRequestDto requestDto) {
@@ -76,7 +76,7 @@ public class MemberController {
     }
 
     // 단건조회
-    @GetMapping("/{id}")
+    @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponseDto> findById(@PathVariable Long id){
         MemberResponseDto memberResponseDto = memberService.findById(id);
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);

@@ -143,4 +143,36 @@ public class NewsFeedService {
 
         return new PageModelDto<>(newsFeedResponseDtos, page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
+
+    // 제목으로 검색
+    public PageModelDto<NewsFeedResponseDto> searchByTitle(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<NewsFeed> result = newsFeedRepository.findByTitleContaining(keyword, pageable);
+        return convertToPageModel(result);
+    }
+
+    // 내용으로 검색
+    public PageModelDto<NewsFeedResponseDto> searchByContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<NewsFeed> result = newsFeedRepository.findByContentsContaining(keyword, pageable);
+        return convertToPageModel(result);
+    }
+
+    // 제목 + 내용 검색
+    public PageModelDto<NewsFeedResponseDto> searchByTitleOrContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<NewsFeed> result = newsFeedRepository.findByTitleContainingOrContentsContaining(keyword, keyword, pageable);
+        return convertToPageModel(result);
+    }
+
+    // 공통 변환 메서드 (중복 제거)
+    private PageModelDto<NewsFeedResponseDto> convertToPageModel(Page<NewsFeed> result) {
+        if (result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "검색된 피드가 없습니다.");
+        }
+        List<NewsFeedResponseDto> searchedDtos = result.getContent().stream()
+                .map(NewsFeedResponseDto::fromEntity)
+                .collect(Collectors.toList());
+        return new PageModelDto<>(searchedDtos, result.getNumber() + 1, result.getSize(), result.getTotalElements());
+    }
 }

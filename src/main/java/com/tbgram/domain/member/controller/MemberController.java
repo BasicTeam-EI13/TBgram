@@ -15,6 +15,8 @@ import com.tbgram.domain.member.service.MemberService;
 import com.tbgram.domain.newsfeed.dto.response.NewsFeedResponseDto;
 
 import com.tbgram.domain.newsfeed.service.NewsFeedService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -99,12 +101,17 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<Void> delete(
             @LoginUser Long id,
-            @RequestBody DeleteMemberRequestDto requestDto) {
+            @RequestBody DeleteMemberRequestDto requestDto,
+            HttpServletRequest request) {
 
         // 뉴스피드 deletedAt 처리
         newsFeedService.softDeleteByMemberId(id);
-
         memberService.delete(id, requestDto.getPassword());
+
+        // 세션 제거
+        HttpSession session = request.getSession();
+        session.invalidate();
+
         return ResponseEntity.noContent().build();
     }
 

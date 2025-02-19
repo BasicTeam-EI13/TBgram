@@ -50,5 +50,6 @@ public class NewsFeed extends BaseEntity {
 
     public boolean isDeleted() {
         return this.deletedAt != null;
+
     }
 }

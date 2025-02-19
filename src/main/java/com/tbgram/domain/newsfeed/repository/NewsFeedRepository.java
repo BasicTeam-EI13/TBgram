@@ -24,4 +24,5 @@ public interface NewsFeedRepository extends JpaRepository<NewsFeed, Long> {
 
     //특정 회원이 작성한 뉴스피드 전체 조회 (삭제되지 않은 데이터만)
     List<NewsFeed> findByMemberIdAndDeletedAtIsNull(Long memberId);
+
 }

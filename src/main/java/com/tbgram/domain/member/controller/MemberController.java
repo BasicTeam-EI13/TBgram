@@ -100,4 +100,5 @@ public class MemberController {
         FindEmailResponseDto findEmailResponseDto = memberService.findByEmailByNickName(requestDto.getNickName());
         return new ResponseEntity<>(findEmailResponseDto, HttpStatus.OK);
     }
+
 }

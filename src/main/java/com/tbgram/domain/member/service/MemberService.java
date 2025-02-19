@@ -94,4 +94,5 @@ public class MemberService {
             return new FindEmailResponseDto(member.getEmail());
 
         }
+
     }

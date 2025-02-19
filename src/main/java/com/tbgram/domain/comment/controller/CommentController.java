@@ -92,7 +92,4 @@ public class CommentController {
         List<CommentResponseDto> responseDtoList = commentService.getCommentsByNewsFeed(newsfeedId);
         return ResponseEntity.ok(responseDtoList);
     }
-
-
-
 }

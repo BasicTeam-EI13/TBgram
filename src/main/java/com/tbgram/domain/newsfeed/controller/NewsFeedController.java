@@ -129,5 +129,6 @@ public class NewsFeedController {
 
         return ResponseEntity.ok(responseDto);
     }
+
 }
 

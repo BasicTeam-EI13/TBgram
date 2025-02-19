@@ -122,4 +122,5 @@ public class NewsFeedService {
         List<NewsFeedResponseDto> content = newsFeedPage.map(NewsFeedResponseDto::fromEntity).toList();
         return new PageModelDto<>(content, newsFeedPage.getNumber() + 1, newsFeedPage.getTotalPages(), newsFeedPage.getTotalElements());
     }
+
 }

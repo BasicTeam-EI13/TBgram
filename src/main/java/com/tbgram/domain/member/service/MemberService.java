@@ -1,23 +1,30 @@
 package com.tbgram.domain.member.service;
 
 import com.tbgram.config.PasswordEncoder;
+import com.tbgram.domain.comment.repository.CommentRepository;
 import com.tbgram.domain.member.dto.response.FindEmailResponseDto;
 import com.tbgram.domain.member.dto.response.MemberResponseDto;
 import com.tbgram.domain.member.entity.Member;
 import com.tbgram.domain.member.repository.MemberRepository;
+import com.tbgram.domain.newsfeed.entity.NewsFeed;
+import com.tbgram.domain.newsfeed.repository.NewsFeedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NewsFeedRepository newsFeedRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public MemberResponseDto signUp(String email, String password, String nickName, String introduction) {
@@ -58,13 +65,41 @@ public class MemberService {
     }
 
     @Transactional
-    public void delete(Long id, String password) {
-        Member member = memberRepository.findMemberByIdOrElseThrow(id);
+    public void delete(Long memberId, String password) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."));
+
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
-        member.delete();
+
+        //회원이 작성한 뉴스피드 조회
+        List<NewsFeed> newsFeeds = newsFeedRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
+
+        //회원이 작성한 뉴스피드에 달린 댓글 삭제
+        for (NewsFeed newsFeed : newsFeeds) {
+            commentRepository.deleteByNewsFeedId(newsFeed.getId());
+        }
+
+        //회원이 작성한 뉴스피드 삭제
+        newsFeedRepository.deleteByMemberId(memberId);
+
+        //회원이 작성한 댓글 삭제
+        commentRepository.deleteByMemberId(memberId);
+
+        // 회원 삭제
+        memberRepository.delete(member);
     }
+
+    //이전 코드 혹시몰라 남깁니다...
+//    @Transactional
+//    public void delete(Long id, String password) {
+//        Member member = memberRepository.findMemberByIdOrElseThrow(id);
+//        if (!passwordEncoder.matches(password, member.getPassword())) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+//        }
+//        member.delete();
+//    }
 
     @Transactional(readOnly = true)
     public MemberResponseDto findById(Long id) {

@@ -24,9 +24,9 @@ public class CommentResponseDto {
         return CommentResponseDto.builder()
                 .id(comment.getId())
                 .contents(comment.getContents())
-                .memberId(comment.getMember().getId())
-                .memberNickName(comment.getMember().getNickName())
-                .newsFeedId(comment.getNewsFeed().getId())
+                .memberId(comment.getMember() != null ? comment.getMember().getId() : null) // null 방지
+                .memberNickName(comment.getMember() != null ? comment.getMember().getNickName() : "탈퇴한 사용자") // null 방지
+                .newsFeedId(comment.getNewsFeed() != null ? comment.getNewsFeed().getId() : null) // null 방지
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .build();

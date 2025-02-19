@@ -70,28 +70,11 @@ public class CommentController {
      * @return
      */
     @DeleteMapping("/{comment_id}")
-    public ResponseEntity<CommentResponseDto> deleteComment(
+    public ResponseEntity<Void> deleteComment(
             @PathVariable("comment_id") Long commentId,
             @LoginUser Long userId) {
          commentService.deleteComment(userId, commentId);
          return ResponseEntity.noContent().build();
      }
 
-    // 특정 뉴스피드의 댓글 목록 조회
-    @GetMapping("/news-feeds/{newsfeed_id}")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsByNewsFeed(@PathVariable("newsfeed_id") Long newsFeedId) {
-        // 뉴스피드 검증
-        NewsFeed newsFeed = newsFeedRepository.findById(newsFeedId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 뉴스피드 입니다."));
-
-        // 댓글 목록 조회
-        List<Comment> comments = commentRepository.findByNewsFeedOrderByCreatedAtDesc(newsFeed);
-
-        // 댓글 리스트를 DTO로 변환
-        List<CommentResponseDto> responseDtoList = comments.stream()
-            .map(CommentResponseDto::fromEntity)
-            .collect(Collectors.toList());
-
-        return ResponseEntity.ok(responseDtoList);
-    }
 }

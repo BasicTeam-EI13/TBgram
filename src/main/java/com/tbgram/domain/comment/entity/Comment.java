@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.action.internal.OrphanRemovalAction;
 
 @Entity
 @Table(name = "comment")
@@ -23,20 +24,18 @@ public class Comment extends BaseEntity {
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id") // FK
+    @JoinColumn(name = "member_id", nullable = false) // FK
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "news_feed_id")   //
     private NewsFeed newsFeed;
 
-    //댓글 내용 수정 메서드 추가
-    public void updateContent(String newContent) {
-        this.contents = newContent;
-    }
-
-    public void update(String contents) {
-        this.contents = contents;
+    public void update(String newContents) {
+        //댓글 변경 검증
+        if(newContents != null && !newContents.isEmpty()) {
+            this.contents = newContents;
+        }
     }
 }
 

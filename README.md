@@ -35,6 +35,7 @@ Spring Boot와 JPA를 활용한 회원 관리 시스템으로, 뉴스 피드 작
 # API 명세
 [Postman]()
 
+[Api 명세서](https://teamsparta.notion.site/API-19a2dc3ef51480eaa438ddd79cf48f6e)
 ![Image](https://github.com/user-attachments/assets/2110131b-7ac1-4e8d-8265-404775144cbe)
 
 
